@@ -11,10 +11,10 @@
 #define true                   1
 #define false                  0
 #define PI                     3.14159265
-#define clamp(val, min, max)   ((val)>(max)?(max):((val)<(min)?(min):(val)))													//!< Constrain a value between min and max.
-#define min(x, y)              (((x) < (y)) ? (x) : (y))																		//!< Minimum value
-#define max(x, y)		       (((x) > (y)) ? (x) : (y))																		//!< Maximum value
-#define intswap(a)             (((a & (0xFF<<24))>>24) | ((a & (0xFF<<16))>>8) | ((a & (0xFF<<8))<<8) | ((a & (0xFF))<<24))		//!< Byteswap 32b
+#define clamp(val, min, max)   ((val)>(max)?(max):((val)<(min)?(min):(val)))                                                 //!< Constrain a value between min and max.
+#define min(x, y)              (((x) < (y)) ? (x) : (y))                                                                     //!< Minimum value
+#define max(x, y)              (((x) > (y)) ? (x) : (y))                                                                     //!< Maximum value
+#define intswap(a)             (((a & (0xFF<<24))>>24) | ((a & (0xFF<<16))>>8) | ((a & (0xFF<<8))<<8) | ((a & (0xFF))<<24))  //!< Byteswap 32b
 #define shortswap(a)           (((a & 0xFF00)>>8) | ((a & (0xFF))<<8))															//!< Byteswap 16b
 
 typedef unsigned long DWORD;
@@ -30,14 +30,14 @@ typedef unsigned short WORD;
 	#include <stdlib.h>
 	#include <ctype.h>
 	
-	#include <fat.h>							// FAT library.
-	#include <sdcard/gcsd.h>					// Gamecube sd card
-	#include <sdcard/wiisd_io.h>				// sd card
+	#include <fat.h>                // FAT library.
+	#include <sdcard/gcsd.h>        // Gamecube sd card
+	#include <sdcard/wiisd_io.h>    // sd card
 	
-	#include <gccore.h>							// Gamecube libraries
-	#include <ogc/pad.h>						// Gamecube pads
-	#include <wiiuse/wpad.h> 					// Wiimotes & expansions
-	#include <mii.h>							// miis
+	#include <gccore.h>             // Gamecube libraries
+	#include <ogc/pad.h>            // Gamecube pads
+	#include <wiiuse/wpad.h>        // Wiimotes & expansions
+	#include <mii.h>                // miis
 	
 #elif defined(PSP)
 	
@@ -115,8 +115,8 @@ typedef unsigned short WORD;
 #elif defined(_WIN32)
     
 	#define GLUT_BUILDING_LIB
-    #define GLUT_DISABLE_ATEXIT_HACK
-    #define __WATCOMC__
+	#define GLUT_DISABLE_ATEXIT_HACK
+	#define __WATCOMC__
 	
 	#include <stdio.h>
 	#include <string.h>
@@ -124,8 +124,8 @@ typedef unsigned short WORD;
 	
 	#include <windows.h>
 	
-    #include <GL/glew.h>
-    #include <GL/freeglut.h>
+	#include <GL/glew.h>
+	#include <GL/freeglut.h>
 	
 	#include <fmod/fmod.h>
 	
@@ -134,17 +134,6 @@ typedef unsigned short WORD;
 #elif defined(UNIX)
 
 #endif
-
-
-typedef enum {
-	UX_MSG_OK	= 0,
-	UX_MSG_NOT_SUP = 1,
-	UX_MSG_TOO_BIG = 2,
-	UX_MSG_UNK_FMT = 3,
-	UX_MSG_UNK_ERR = 4,
-	UX_MSG_CNT_OPN = 5,
-	UX_MSG_NOT_MEM = 6
-} UX_MSG_ERRORS;
 
 /* UXCODE DEFINES */
 //#include "uxcontrols.h"
