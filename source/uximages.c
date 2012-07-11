@@ -77,22 +77,15 @@ static UX_IMAGE *uximages_imagecreate(u32 width, u32 height/*, PIXELFORMATTT */)
 	
 	return img;
 }
- 
-#include "uximages/bmpfiles.c"
 
-static UX_IMAGE *uximages_loadimagePNG(char *file) {
-	return NULL;
-}
+// Per file-format includes: 
+#include "uximages/bmp.c"
 
-static UX_IMAGE *uximages_loadimageJPG(char *file) {
-	return NULL;
-}
- 
- 
- 
- 
- 
- 
+// To-do fileformats:
+static UX_IMAGE *uximages_loadimagePNG(char *file) { return NULL; }
+static UX_IMAGE *uximages_loadimageJPG(char *file) { return NULL; }
+static UX_IMAGE *uximages_loadimageGIF(char *file) { return NULL; }
+static UX_IMAGE *uximages_loadimagePCX(char *file) { return NULL; }
  /*
  typedef struct _TgaHeader {
   BYTE IDLength;        // 00h  Size of Image ID field
@@ -153,10 +146,7 @@ static UX_IMAGE *uximages_loadimageTGA(char *file, u32* result, int mipmap) {
 	return NULL;
 }
 
-static UX_IMAGE *uximages_loadimagePCX(char *file) {
-	//
-	return NULL;
-}
+
   
 
 /*
