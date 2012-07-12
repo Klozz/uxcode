@@ -15,20 +15,20 @@ typedef struct UXCONTROLS_KEYBOARD {
 /* Mouse buttons */
 typedef struct UXCONTROLS_MOUSE_KEYS {
 	struct {
-		unsigned char left   : 1;
-		unsigned char right  : 1;
-		unsigned char center : 1;
-		unsigned char res    : 5;               //! 5-bit extra space.
+		unsigned char left   : 1;				//!< Left button down
+		unsigned char right  : 1;				//!< Center button down
+		unsigned char center : 1;				//!< Right button down
+		unsigned char res    : 5;               //!< 5-bit extra space.
 	};
 } UXCONTROLS_MOUSE_KEYS;
 
 /* Mouse definition */
 typedef struct UXCONTROLS_MOUSE {
-	unsigned int x;                             //! X mouse position
-	unsigned int y;                             //! Y mouse position
+	unsigned int x;                             //!< X mouse position
+	unsigned int y;                             //!< Y mouse position
 	
-	struct UXCONTROLS_MOUSE_KEYS held;          //! Keys currently held.
-	struct UXCONTROLS_MOUSE_KEYS pressed;		//! Keys inmediately pressed.
-	struct UXCONTROLS_MOUSE_KEYS released;		//! Keys inmediately released.
+	struct UXCONTROLS_MOUSE_KEYS held;          //!< Keys currently held.
+	struct UXCONTROLS_MOUSE_KEYS pressed;		//!< Keys inmediately pressed.
+	struct UXCONTROLS_MOUSE_KEYS released;		//!< Keys inmediately released.
 } UXCONTROLS_MOUSE;
 #endif

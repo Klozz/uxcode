@@ -1,6 +1,7 @@
 # Build and Release Folders
 bin-debug/
 bin-release/
+docs/
 
 # Project property files
 .actionScriptProperties

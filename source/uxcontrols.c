@@ -3,11 +3,19 @@
 
 #include "utils.h"		// Global common utils
 
-UX_CONTROLS controls;	// Global controls object.
+UX_CONTROLS controls;
 
 
 
+/** @defgroup ux_controls Controls
 
+	Input routines.
+	@{
+*/
+
+/** 
+	\brief Initialize the controls subsystem.
+*/
 int uxcontrols_init() {
 	#if defined(PSP)
 		sceCtrlSetSamplingCycle(0);
@@ -22,6 +30,9 @@ int uxcontrols_init() {
 	return 0;
 }
 
+/**
+	\brief De-initialize the controls subsystem
+*/
 void uxcontrols_shutdown() {
 	#if defined(WII)
 		WPAD_SetIdleTimeout(1);  // Let all turn off now.
@@ -29,8 +40,10 @@ void uxcontrols_shutdown() {
 	#endif
 }
 
-/* 
- * Read the controls:
+/** 
+ * \brief Take a read of the current input state.
+ * \todo Maybe include auto-repeat system.
+ * \todo **PS3** platform-dependant code.
  */
 void uxcontrols_read() {
 	#if defined(PSP)
@@ -80,10 +93,11 @@ void uxcontrols_read() {
 	return;
 }
 
+/** @} */
 
-/* Platform specific needs */
 #if defined(WII)
 //#define __WPADS_ADDR 0x0				// led hack
+
 void uxcontrols_wiiread(UXCONTROLS_WIIMOTE *wiimote, int i) {
 	
 	//#define	UXCONTROLS_WIILED_RESET for (j=0;j<4;j++) { if (i==j) { wleds[i][j] = 1; } else { wleds[i][j] = 0; } }
@@ -134,3 +148,4 @@ void uxcontrols_wiiread(UXCONTROLS_WIIMOTE *wiimote, int i) {
 	//wiimote[i]->wmGforce.z = wiimote[i]->wmGforce.z - __wpads[i]->accel_calib.cal_g.z;
 }
 #endif
+

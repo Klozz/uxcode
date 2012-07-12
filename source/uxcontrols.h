@@ -9,7 +9,7 @@
 
 
 /**
- ** Control structs.
+ ** Control struct.
  **/
 typedef struct UX_CONTROLS {
 #if defined(PSP)
@@ -25,12 +25,9 @@ typedef struct UX_CONTROLS {
 } UX_CONTROLS;
 
 
-/**
- ** Control functions.
- **/
 extern UX_CONTROLS controls;			//!< Global object controls.
-extern int uxcontrols_init();			//!< Initializate controls.
-extern void uxcontrols_shutdown();		//!< Deinit controls.
-extern void uxcontrols_read();			//!< Take a read.
+extern int uxcontrols_init();
+extern void uxcontrols_shutdown();
+extern void uxcontrols_read();
 
 #endif

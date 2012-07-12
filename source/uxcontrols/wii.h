@@ -67,7 +67,7 @@ typedef struct UXCONTROLS_WIIEXPANSION_CLASSIC {
 /* Wiimote + expansion buttons */
 typedef struct UXCONTROLS_WIIMOTE_BUTTONS { 
 	/* expansion */
-	union UXCONTROLS_WIIEXPANSION {
+	union {
 		struct UXCONTROLS_WIIEXPANSION_CLASSIC    classic;
 		struct UXCONTROLS_WIIEXPANSION_NUNCHUCK   nunchuck;
 		struct UXCONTROLS_WIIEXPANSION_GUITARHERO guitar;
