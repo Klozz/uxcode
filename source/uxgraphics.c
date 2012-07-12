@@ -1,32 +1,36 @@
-/* description: Nucleo grafico de UXCORE. */
-/* to-do: Unificar matrices. (Tengo que mirarlo, no recuerdo si ya est&aacute; hecho. */
-/* to-do: Stencil buffer PC,PSP. Simular stencil en WII. */
-/* to-do: M&uacute;ltiples listas de comandos? */
-/* to-do: Inicializar matrices vista y mundo, configurar a ortogonal bidimensional al inicio. */
-/* to-do: Aprovechar las 2MB de VRAM restantes en PSP */
-/* to-do: Devolver inicializaci&oacute;n correcta / erronea al n&uacute;cleo UX. */
+#include "utils.h"
 
-#include "../../utils.h"
-
-/**********************************
- *		Globals UXGRAPHICS 		  *
- **********************************/
 int uxgraphics_inited           = 0;
 int uxgraphics_lastPerspective  = 0;
 int uxgraphics_in3D             = 0;
 
-/* Referencias y manuales
- * 
- *  (WIN32)	OpenGL: http://www.opengl.org/sdk/docs/man/
- *  (PSP)	PSPSDK: http://psp.jim.sh/pspsdk-doc/files.html
- *  (WII)	LIBOGC: http://libogc.devkitpro.org/gx_8h.html
- *  (NDS)	LIBNDS: http://libnds.devkitpro.org/index.html
- * 
- * */
-
 /* Variables internas...*/
 void *framebuffers[2] = {NULL, NULL};
 int fb = 0;
+
+/** @defgroup ux_graphics Graphics
+
+	Graphics subsystem
+	@{
+		\brief
+			Graphics subsystem.
+			
+			Referencias y manuales
+				- (WIN32)	OpenGL: http://www.opengl.org/sdk/docs/man/
+				- (PSP)		PSPSDK: http://psp.jim.sh/pspsdk-doc/files.html
+				- (WII)		LIBOGC: http://libogc.devkitpro.org/gx_8h.html
+				- (NDS)		LIBNDS: http://libnds.devkitpro.org/index.html
+ 
+ 		\todo
+			- graphics documentation
+			- unify matrixes
+			- stencil buffer (pc,psp). Emulate stencil (wii)
+			- multiple draw-lists.
+			- initialize matrixes.
+			- PSP vram 2mb handling.
+*/
+
+
 
 
 /* Pero de forma bonita... */
@@ -55,11 +59,10 @@ UX_VIEWPORT     dView;                  /* Viewport por defecto */
 #endif
 
 
-/************************************************
- *  Configuracion inicial de las graficas....	*
- ************************************************/
- /*
-  * Inicializacion de los graficos.
+/
+ 
+ /**
+  * \brief Graphics initialization
   */
 int uxgraphics_init() {
 	if (uxgraphics_inited) { return 0; }
@@ -551,3 +554,5 @@ void uxgraphics_shutdown() {
 	uxmemfree(gp_fifo);
 #endif
 }
+
+/**	@} */

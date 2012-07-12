@@ -26,8 +26,9 @@ typedef struct UX_CONTROLS {
 
 
 extern UX_CONTROLS controls;			//!< Global object controls.
+extern int uxcontrols_inited;
 extern int uxcontrols_init();
-extern void uxcontrols_shutdown();
-extern void uxcontrols_read();
+extern int uxcontrols_shutdown();
+extern int uxcontrols_read();
 
 #endif

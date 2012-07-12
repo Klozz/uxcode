@@ -1,4 +1,13 @@
 /* UXCODE MATH IMPLEMENTATION */
+
+/** @defgroup ux_math Math functions.
+
+	Math functions.
+	@{
+		\todo
+			- math documentation
+	@} */
+	
 #ifdef PSP
 float uxadd(float a, float b){
    float result;

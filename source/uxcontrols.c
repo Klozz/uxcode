@@ -4,7 +4,7 @@
 #include "utils.h"		// Global common utils
 
 UX_CONTROLS controls;
-
+int uxcontrols_inited = false;
 
 
 /** @defgroup ux_controls Controls
@@ -15,37 +15,55 @@ UX_CONTROLS controls;
 
 /** 
 	\brief Initialize the controls subsystem.
+	\return 0 on success, failed otherwise.
 */
 int uxcontrols_init() {
+	if (uxcontrols_inited == true) { return; }
+	
 	#if defined(PSP)
 		sceCtrlSetSamplingCycle(0);
 		sceCtrlSetSamplingMode(PSP_CTRL_MODE_ANALOG);
+		uxcontrols_inited = true;
 	#elif defined(WII)
 		WPAD_Init();
 		PAD_Init();
 		WPAD_SetVRes(-1, rmode->fbWidth, rmode->efbHeight); // IR-resolution
 		WPAD_SetDataFormat(WPAD_CHAN_ALL, WPAD_FMT_BTNS_ACC_IR);
 		WPAD_SetIdleTimeout(300); // 5 mins
+		uxcontrols_inited = true;
 	#endif
-	return 0;
+	
+	return !(uxcontrols_inited == true);
 }
 
 /**
 	\brief De-initialize the controls subsystem
+	\return 0 on success, failed otherwise.
 */
-void uxcontrols_shutdown() {
+int uxcontrols_shutdown() {
+	if (uxcontrols_inited == false) { return; }
+	
 	#if defined(WII)
 		WPAD_SetIdleTimeout(1);  // Let all turn off now.
 		WPAD_Shutdown();         // Finalize wpad
 	#endif
+	
+	uxcontrols_inited = false;
+	
+	return !(uxcontrols_inited == false);
 }
+
 
 /** 
  * \brief Take a read of the current input state.
- * \todo Maybe include auto-repeat system.
- * \todo **PS3** platform-dependant code.
+ * \todo
+		- Maybe include auto-repeat system.
+		- PS3 platform-dependant code.
+		- Wii accel calibration
+		- Wii led hack?
+ * \return 0 on success, failed otherwise.	
  */
-void uxcontrols_read() {
+int uxcontrols_read() {
 	#if defined(PSP)
 		unsigned int* pheld;
 		unsigned int* ppressed;
@@ -90,7 +108,7 @@ void uxcontrols_read() {
 		keys = (unsigned int *)( &(controls.ndspad.pressed) );	*keys = keysDown();
 		keys = (unsigned int *)( &(controls.ndspad.released) );	*keys = keysUp();
 	#endif
-	return;
+	return 0;
 }
 
 /** @} */

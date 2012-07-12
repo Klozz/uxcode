@@ -1,5 +1,16 @@
 #include "utils.h"
 
+/** @defgroup ux_files Filesys
+
+	File routines.
+	@{
+		\todo
+			- Encapsulate file object.
+			- Virtual files.
+			- Test wii filesys.
+			- file documentation
+	@} */
+
 unsigned int uxfiles_inited     = 0;
 char uxfilesCurDir[UXFILEPATHMAXLENGTH];
 

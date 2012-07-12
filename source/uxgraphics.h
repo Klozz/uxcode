@@ -107,12 +107,13 @@ typedef struct UX_VIEWPORT {
 /*************************
  * Global variables      *
  *************************/
-
-extern int uxgraphics_inited;		//!< graphics system initialized.
-extern int uxgraphics_in3D;			//!< last render was 3D.
+/** \internal */
+extern int uxgraphics_inited;
+extern int uxgraphics_in3D;
 
 extern void *framebuffers[2];		//!< framebuffers.	(2? we need a define, cause NDS has 2 displays * 2 buffers = 4 framebuffers perhaps)
 extern int fb;						//!< current framebuffer
+/** \internal  */
 
 extern UX_IMAGE		dispBuffer;		//!< Display buffer abstraction to image.
 extern UX_IMAGE		drawBuffer;		//!< Draw buffer abstraction to image.
