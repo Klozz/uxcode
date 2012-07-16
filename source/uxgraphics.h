@@ -54,34 +54,41 @@ typedef struct {
 #include "uxvertex.h"
 #include "uximages.h"
 
+/** Graphics initialize structure */
+typedef struct UX_GRAPHICSMODE {
+	unsigned int width;						//!< Graphics mode / window mode width, if needed.
+	unsigned int height;					//!< Graphics mode / window mode height, if needed.
+	enum UX_PIXELFORMAT pixelFormat;		//!< Graphics pixelformat, if needed.
+	unsigned int extras;					//!< Extra-per-platform flags.
+} UX_GRAPHICSMODE;
 
 /** Render configuration structure. */
 typedef struct UX_RENDER {
-	UXCOLOR clear_color;								//!< Drawbuffer clear color.
-	unsigned int clear_depth; 							//!< Clear depth (24bit) : 0x000000-0xffffff
+	UXCOLOR clear_color;					//!< Drawbuffer clear color.
+	unsigned int clear_depth; 				//!< Clear depth (24bit) : 0x000000-0xffffff
 	
-	int faceculling_enabled;							//!< Hide reversed faces.
-	int depthtest_enabled;								//!< Draw only if *depth* test passes.
-	int texture3d_enabled;								//!< Textures in 3D mode enabled.
-	int texture2d_enabled;								//!< Textures in 2D mode enabled.
-	int blending_enabled;								//!< Blend function enabled.
+	int faceculling_enabled;				//!< Hide reversed faces.
+	int depthtest_enabled;					//!< Draw only if *depth* test passes.
+	int texture3d_enabled;					//!< Textures in 3D mode enabled.
+	int texture2d_enabled;					//!< Textures in 2D mode enabled.
+	int blending_enabled;					//!< Blend function enabled.
 	
-	int faceculling;									//!< Polygon draw rotation: UX_GL_CULLBACK (clockwise), UX_GL_CULLFRONT (counter-clockwise).
+	int faceculling;						//!< Polygon draw rotation: UX_GL_CULLBACK (clockwise), UX_GL_CULLFRONT (counter-clockwise).
 	
-	int depthtest_writes;								//!< Depth test writes.
-	int depthtest_function;								//!< Depth test function.
+	int depthtest_writes;					//!< Depth test writes.
+	int depthtest_function;					//!< Depth test function.
 	
-	int alphatest_enabled;								//!< Draw only if *alpha* test passes.
-	int alphatest_reference;							//!< Alpha test reference value: 0x00-0xFF
-	int alphatest_operator;								//!< Alpha test operator: >,>=,<,<=,!=,==,1,0
+	int alphatest_enabled;					//!< Draw only if *alpha* test passes.
+	int alphatest_reference;				//!< Alpha test reference value: 0x00-0xFF
+	int alphatest_operator;					//!< Alpha test operator: >,>=,<,<=,!=,==,1,0
 	
-	int blending_operator;								//!< Blend function operator:  +,-,max(),min()...
-	int blending_src_function;							//!< Blend source color function
-	int blending_dst_function;							//!< Blend destination color function
-	int blending_logic;									//!< Blend logic operation &,|,~...
+	int blending_operator;					//!< Blend function operator:  +,-,max(),min()...
+	int blending_src_function;				//!< Blend source color function
+	int blending_dst_function;				//!< Blend destination color function
+	int blending_logic;						//!< Blend logic operation &,|,~...
 	
-	int scissor_enabled;								//!< Scissoring enabled
-	UX_INTBOX scissor_box;								//!< Scissor box: {x,y,w,h}
+	int scissor_enabled;					//!< Scissoring enabled
+	UX_INTBOX scissor_box;					//!< Scissor box: {x,y,w,h}
 } UX_RENDER;
 
 /* Viewport configuration structure. */

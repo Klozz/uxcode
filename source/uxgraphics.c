@@ -10,18 +10,16 @@ int fb = 0;
 
 /** @defgroup ux_graphics Graphics
 
-	Graphics subsystem
-	@{
-		\brief
-			Graphics subsystem.
-			
-			Referencias y manuales
-				- (WIN32)	OpenGL: http://www.opengl.org/sdk/docs/man/
-				- (PSP)		PSPSDK: http://psp.jim.sh/pspsdk-doc/files.html
-				- (WII)		LIBOGC: http://libogc.devkitpro.org/gx_8h.html
-				- (NDS)		LIBNDS: http://libnds.devkitpro.org/index.html
+@{
+\brief Graphics subsystem.
+
+Docs and manuals:
+ - (WIN32) OpenGL: http://www.opengl.org/sdk/docs/man/
+ - (PSP) PSPSDK: http://psp.jim.sh/pspsdk-doc/files.html
+ - (WII) LIBOGC: http://libogc.devkitpro.org/gx_8h.html
+ - (NDS) LIBNDS: http://libnds.devkitpro.org/index.html
  
- 		\todo
+ \todo
 			- graphics documentation
 			- unify matrixes
 			- stencil buffer (pc,psp). Emulate stencil (wii)
