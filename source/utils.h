@@ -1,6 +1,10 @@
 #ifndef LUADEVUTILSH
 #define LUADEVUTILSH
 
+#define GLUT_BUILDING_LIB
+#define GLUT_DISABLE_ATEXIT_HACK
+#define __WATCOMC__
+
 #define and                    &&
 #define or                     ||
 #define bitand                 &
@@ -16,6 +20,13 @@
 #define max(x, y)              (((x) > (y)) ? (x) : (y))                                                                     //!< Maximum value
 #define intswap(a)             (((a & (0xFF<<24))>>24) | ((a & (0xFF<<16))>>8) | ((a & (0xFF<<8))<<8) | ((a & (0xFF))<<24))  //!< Byteswap 32b
 #define shortswap(a)           (((a & 0xFF00)>>8) | ((a & (0xFF))<<8))															//!< Byteswap 16b
+
+/* MESSAGES RETURNED */
+#define UX_MSG_CNT_OPN 1
+#define UX_MSG_NOT_MEM 2
+#define UX_MSG_NOT_SUP 3
+#define UX_MSG_TOO_BIG 4
+#define UX_MSG_OK      0
 
 typedef unsigned long DWORD;
 typedef unsigned short WORD;

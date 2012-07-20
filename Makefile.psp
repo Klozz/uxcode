@@ -1,0 +1,39 @@
+#															UNIVERSAL CROSSPLATFORM CODE 0.1
+UXCORE_O	=	source/uxcode.o \
+				source/uxmem.o \
+				source/uxcontrols.o \
+				source/uxfilesys.o \
+				source/uximages.o \
+				source/uxvertex.o \
+				source/uxgraphics.o \
+				source/uxmath.o \
+				source/uxstrings.o \
+				source/uxrtc.o \
+				source/utils.o
+
+COMMON_O	=	$(UXCORE_O)
+
+TARGET				= UXCODE
+EXTRA_TARGETS 		= EBOOT.PBP
+BUILD_PRX 			= 1
+PSP_EBOOT_TITLE 	= UXCODE TEST
+# PSP_EBOOT_ICON 	= icon0.png
+# PSP_EBOOT_PIC1 	= PIC1.PNG
+#PSP_EBOOT_ICON1 	= icon1.pmf
+#PSP_EBOOT_UNKPNG = BOOT.png
+#PSP_EBOOT_SND0 	= snd0.at3
+PSP_LARGE_MEMORY 	= 1
+PSP_FW_VERSION 		= 371
+
+CFLAGS 				= -O2 -G0 -Wall -fshort-wchar -fno-pic -mno-check-zero-division -fomit-frame-pointer -mno-abicalls -DPSPFW3XX -DPSP
+CXXFLAGS 			= $(CFLAGS) -fno-exceptions -fno-rtti
+ASFLAGS 			= $(CFLAGS)
+OBJS 				= $(COMMON_O)
+
+LIBRERIAS1 			= -lpspsystemctrl_kernel -lpspgum -lpspge -lpspgum_vfpu -lpspgu -lpsppower 
+LIBRERIAS2 			= -lpspumd -lpsphprm -lpspaudio -lpspaudiocodec -lpspmath -lpspusb -lpspusbstor -lpspusbcam -lpsputility -lpspwlan
+LIBRERIAS3 			= -lpspkubridge -lpng -ljpeg -lz -lpsprtc -lpspssl -lpsphttp -lm -lpspsdk -lpspjpeg -lzzip -lpspopenpsid
+LIBS				= $(LIBRERIAS1) $(LIBRERIAS2) $(LIBRERIAS3)
+PSPSDK				= $(shell psp-config --pspsdk-path)
+
+include $(PSPSDK)/lib/build.mak

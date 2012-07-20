@@ -43,7 +43,7 @@ void uxaudio_stop(UX_AUDIO* song) {
 }
 
 void uxaudio_pause(UX_AUDIO* song, int toggle) {
-	if (song != NULL) { return }
+	if (song != NULL) { return; }
 	if (uxaudio_playState(song) == 0 and (toggle == 1 or toggle == 2)) {
 		uxaudio_play(song);
 		return;

@@ -57,8 +57,6 @@ UX_VIEWPORT     dView;                  /* Viewport por defecto */
 #endif
 
 
-/
- 
  /**
   * \brief Graphics initialization
   */
@@ -237,13 +235,13 @@ int uxgraphics_init() {
 #endif
 #if defined(WII)
 	GX_InvVtxCache();
-	uxgraphics_precachevtype(UX_TIPO_RAPIDO | UX_TIPO_TEXTURED, GX_VTXFMT0);
-	uxgraphics_precachevtype(UX_TIPO_RAPIDO | UX_TIPO_COLOREADO , GX_VTXFMT1);
-	uxgraphics_precachevtype(UX_TIPO_RAPIDO | UX_TIPO_COLOREADO | UX_TIPO_TEXTURED | UX_TIPO_NORMAL , GX_VTXFMT2);
-	uxgraphics_precachevtype(UX_TIPO_TEXTURED , GX_VTXFMT3);
-	uxgraphics_precachevtype(UX_TIPO_COLOREADO , GX_VTXFMT4);
-	uxgraphics_precachevtype(UX_TIPO_COLOREADO | UX_TIPO_TEXTURED | UX_TIPO_NORMAL , GX_VTXFMT5);
-	uxgraphics_precachevtype(UX_TIPO_COLOREADO | UX_TIPO_TEXTURED , GX_VTXFMT6);
+	uxgraphics_precachevtype(UX_VTX_FASTVERTEX | UX_VTX_TEXTURED, GX_VTXFMT0);
+	uxgraphics_precachevtype(UX_VTX_FASTVERTEX | UX_VTX_COLOR , GX_VTXFMT1);
+	uxgraphics_precachevtype(UX_VTX_FASTVERTEX | UX_VTX_COLOR | UX_VTX_TEXTURED | UX_VTX_NORMAL , GX_VTXFMT2);
+	uxgraphics_precachevtype(UX_VTX_TEXTURED , GX_VTXFMT3);
+	uxgraphics_precachevtype(UX_VTX_COLOR , GX_VTXFMT4);
+	uxgraphics_precachevtype(UX_VTX_COLOR | UX_VTX_TEXTURED | UX_VTX_NORMAL , GX_VTXFMT5);
+	uxgraphics_precachevtype(UX_VTX_COLOR | UX_VTX_TEXTURED , GX_VTXFMT6);
 	
 	guMtxIdentity(dView.modelview);
 	

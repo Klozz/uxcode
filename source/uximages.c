@@ -1,4 +1,4 @@
-#include "../../utils.h"
+#include "utils.h"
 
 UX_IMAGE* uximages_lastTexture = NULL;
  
@@ -82,10 +82,10 @@ static UX_IMAGE *uximages_imagecreate(u32 width, u32 height/*, PIXELFORMATTT */)
 #include "uximages/bmp.c"
 
 // To-do fileformats:
-static UX_IMAGE *uximages_loadimagePNG(char *file) { return NULL; }
-static UX_IMAGE *uximages_loadimageJPG(char *file) { return NULL; }
-static UX_IMAGE *uximages_loadimageGIF(char *file) { return NULL; }
-static UX_IMAGE *uximages_loadimagePCX(char *file) { return NULL; }
+static UX_IMAGE *uximages_loadimagePNG(char *file, u32* result, int mipmap) { return NULL; }
+static UX_IMAGE *uximages_loadimageJPG(char *file, u32* result, int mipmap) { return NULL; }
+static UX_IMAGE *uximages_loadimageGIF(char *file, u32* result, int mipmap) { return NULL; }
+static UX_IMAGE *uximages_loadimagePCX(char *file, u32* result, int mipmap) { return NULL; }
  /*
  typedef struct _TgaHeader {
   BYTE IDLength;        // 00h  Size of Image ID field
@@ -166,11 +166,11 @@ UX_IMAGE *uximages_loadimage(char *file) {
 	if ( readd < 8 ) { uxfclose(archivo); return NULL; }																		/* min(8 bytes)  */
 	uxfclose(archivo);																											/* close 		 */
 	/* BMP */ if ( header[0] == 'B' and header[1] == 'M' ) { img = uximages_loadimageBMP(file,&r,0); }
-	/* PNG */ if ( header[0] == 0x89 and header[1]==0x50 and header[2]==0x4E and header[3]==0x47 and header[4]==0x0D and header[5]==0x0A and header[6]==0x1A and header[7]==0x0A) { img = uximages_loadimagePNG(file); }
-	/* JPG */ if ( header[0] == 0xFF and header[1]==0xD8 and header[2]==0xFF) { img = uximages_loadimageJPG(file); }
+	/* PNG */ if ( header[0] == 0x89 and header[1]==0x50 and header[2]==0x4E and header[3]==0x47 and header[4]==0x0D and header[5]==0x0A and header[6]==0x1A and header[7]==0x0A) { img = uximages_loadimagePNG(file,&r,0); }
+	/* JPG */ if ( header[0] == 0xFF and header[1]==0xD8 and header[2]==0xFF) { img = uximages_loadimageJPG(file,&r,0); }
 	/* GIF */ if ( !strncmp((char*)header,"GIF8",4) ) { img = uximages_loadimageGIF(file,&r,0); }
 	/* TGA */ if ( !strncmp(str_lower(uxfile_ext(file,&extlen)),"tga",3) ) { img = uximages_loadimageTGA(file,&r,0); }
-	/* PCX */ if ( header[0] == 0x0A ) { img = uximages_loadimagePCX(file); }
+	/* PCX */ if ( header[0] == 0x0A ) { img = uximages_loadimagePCX(file,&r,0); }
 	if ( !img ) { r = UX_MSG_NOT_SUP; return NULL; }
 	/* flush image */
 	uximages_flushtex(img);
