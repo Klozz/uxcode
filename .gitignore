@@ -1,10 +1,25 @@
 # Build and Release Folders
-bin-debug/
-bin-release/
-docs/
+bin-debug/*.*
+build/*.*
+docs/*.*
 
-# Project property files
-.actionScriptProperties
-.flexProperties
-.settings/
-.project
+# Object files
+*.o
+*.d
+
+# Libraries
+*.lib
+*.a
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Executables
+*.exe
+*.out
+*.app
+*.dol
+*.pbp
