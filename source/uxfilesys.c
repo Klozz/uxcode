@@ -118,7 +118,7 @@ u32 uxf_getDWord(UXFILE *ptr) {
 	return a;
 }
 
-void uxf_getString(u8 * str, int len, UXFILE *ptr) { 
+void uxf_getString(u8 * str, int len, UXFILE *ptr) {
 	uxf_readu8(ptr,str,len,0);
 }
 

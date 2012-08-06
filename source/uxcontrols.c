@@ -18,7 +18,7 @@ int uxcontrols_inited = false;
 	\return 0 on success, failed otherwise.
 */
 int uxcontrols_init() {
-	if (uxcontrols_inited == true) { return; }
+	if (uxcontrols_inited == true) { return false; }
 	
 	#if defined(PSP)
 		sceCtrlSetSamplingCycle(0);
@@ -41,7 +41,7 @@ int uxcontrols_init() {
 	\return 0 on success, failed otherwise.
 */
 int uxcontrols_shutdown() {
-	if (uxcontrols_inited == false) { return; }
+	if (uxcontrols_inited == false) { return false; }
 	
 	#if defined(WII)
 		WPAD_SetIdleTimeout(1);  // Let all turn off now.

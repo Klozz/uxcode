@@ -4,21 +4,6 @@
 	typedef Mtx 	UX_MATRIX;
 	typedef Mtx44	UX_MATRIX4;
 	
-	enum UX_PIXELFORMAT {
-		UX_PF_5650=GX_PF_RGB565_Z16,			//!< 16 bits, 5 bits per component, except green which has 6, no alpha
-		UX_PF_5551=100,							//!< not supported
-		UX_PF_4444=100,							//!< not supported
-		UX_PF_6666=GX_PF_RGBA6_Z24,				//!< 24 bits, 6 bits per component, 6 alpha bits.
-		UX_PF_8880=GX_PF_RGB8_Z24,				//!< 24 bits, 8 bits per component, no alpha.
-		UX_PF_8888=100,							//!< not supported
-		UX_PF_2BIT=100,							//!< not supported
-		UX_PF_4BIT=100,							//!< not supported
-		UX_PF_8BIT=100,							//!< not supported
-		UX_PF_DXT1=100,							//!< not supported
-		UX_PF_DXT3=100,							//!< not supported
-		UX_PF_DXT5=100							//!< not supported
-	};
-	
 	#define UXRGBA(r,g,b,a) (UXCOLOR){ r,g,b,a }
 	#define UXR(x) x.r
 	#define UXG(x) x.g

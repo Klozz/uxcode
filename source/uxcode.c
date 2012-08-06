@@ -15,17 +15,51 @@ void ux_atexit(void) {
 
 
 int ux_main(int argc, char *argv[]) {
+    /* Prepare screen by platform */
+
+    #if defined(PSP)
+		graphics_mode.width = 480;
+		graphics_mode.height = 272;
+		graphics_mode.w_width = 2048;
+		graphics_mode.w_height = 2048;
+		graphics_mode.pixelFormat = UX_PF_8888;
+		graphics_mode.extras = 0;
+	#elif defined(WII)
+		graphics_mode.width = 678;
+		graphics_mode.height = 528;
+		graphics_mode.w_width = 0;
+		graphics_mode.w_height = 0;
+		graphics_mode.pixelFormat = UX_PF_8888;
+		graphics_mode.extras = 0;
+	#elif defined(_WIN32)
+		graphics_mode.width = 800;
+		graphics_mode.height = 600;
+		graphics_mode.w_width = 0;
+		graphics_mode.w_height = 0;
+		graphics_mode.pixelFormat = UX_PF_8888;
+		graphics_mode.extras = 0;
+	#endif
+
     /* INITS */
-	uxgraphics_init();
+	uxgraphics_init(&graphics_mode);
 	uxfilesys_init();
 	uxcontrols_init();
+	/* ... */
 
+
+	/* demo-code */
 	float theta = -90.00f;
 	int cnt = 0;
+
+	
+
 	
 	while (!ux_quit) {
 		uxcontrols_read();
 		uxgraphics_clearscreen();              //clear screen
+		
+		// one for all
+		
 		
 		#ifdef PSP
 			if (controls.psppad.held.up!=0) { dView.sync = 0; } 
@@ -38,7 +72,6 @@ int ux_main(int argc, char *argv[]) {
 				mesh = uxgraphics_genTexMesh(test);
 				
 				if (test) { 
-//					uxdebug("File seems ok: %i %i %u %u %u \n",test->w,test->h,((u32*)(test->ptr))[0],((u32*)(test->ptr))[1],((u32*)(test->ptr))[2]);
 					while (1) {
 						uxcontrols_read();
 						uxgraphics_clearscreen(); 
@@ -136,31 +169,5 @@ int ux_main(int argc, char *argv[]) {
 	return 0;
 }
 
-
-
-/*
- #ifdef PSP
-    uxdebug("Testing uxfilesys.c... OK");
-    SceUID modules[8];
-    uxdebug("Testing usermodules...");      
-    modules[0] = pspSdkLoadStartModule("flash0:/kd/chkreg.prx", PSP_MEMORY_PARTITION_KERNEL);
-    modules[1] = pspSdkLoadStartModule("flash0:/kd/npdrm.prx", PSP_MEMORY_PARTITION_KERNEL);
-    modules[2] = pspSdkLoadStartModule("flash0:/kd/semawm.prx", PSP_MEMORY_PARTITION_KERNEL);
-    modules[3] = pspSdkLoadStartModule("flash0:/kd/usbstor.prx", PSP_MEMORY_PARTITION_KERNEL);
-    modules[4] = pspSdkLoadStartModule("flash0:/kd/usbstormgr.prx", PSP_MEMORY_PARTITION_KERNEL);
-    modules[5] = pspSdkLoadStartModule("flash0:/kd/usbstorms.prx", PSP_MEMORY_PARTITION_KERNEL);
-    modules[6] = pspSdkLoadStartModule("flash0:/kd/usbstorboot.prx", PSP_MEMORY_PARTITION_KERNEL);
-	modules[7] = pspSdkLoadStartModule("flash0:/kd/usbdevice.prx", PSP_MEMORY_PARTITION_KERNEL); 
-	for (i=0;i<8;i++) {
-        uxdebug(" Usb module [%d]: 0x%08X != 0x8...",i,modules[i]);
-    }
-    uxdebug("Modulo PSP_NET_MODULE_COMMON [%d > 0]",sceUtilityLoadNetModule(PSP_NET_MODULE_COMMON));
-    uxdebug("Modulo PSP_NET_MODULE_INET [%d > 0]",sceUtilityLoadNetModule(PSP_NET_MODULE_INET));
-    uxdebug("Modulo PSP_NET_MODULE_PARSEURI [%d > 0]",sceUtilityLoadNetModule(PSP_NET_MODULE_PARSEURI));
-    uxdebug("Modulo PSP_NET_MODULE_PARSEHTTP [%d > 0]",sceUtilityLoadNetModule(PSP_NET_MODULE_PARSEHTTP));
-    uxdebug("Modulo PSP_NET_MODULE_HTTP [%d > 0]",sceUtilityLoadNetModule(PSP_NET_MODULE_HTTP));
-    uxdebug("Modulo PSP_NET_MODULE_SSL [%d > 0]",sceUtilityLoadNetModule(PSP_NET_MODULE_SSL));
-    #endif 
-*/
 
 UXCODE_GENERATE_MAIN();

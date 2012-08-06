@@ -3,20 +3,6 @@
 	typedef u32 UX_COLORU32;
 	typedef ScePspFMatrix4 UX_MATRIX;
 	typedef ScePspFMatrix4 UX_MATRIX4;
-	enum UX_PIXELFORMAT {
-		UX_PF_5650=GU_PSM_5650,					//!< 16 bits, 5 bits per component, except green which has 6, no alpha.	texture, display, pallete
-		UX_PF_5551=GU_PSM_5551,					//!< 15 bits, 5 bits per component, 1 alpha bit. texture, display, pallete
-		UX_PF_4444=GU_PSM_4444,					//!< 12 bits, 4 bits per component, 4 alpha bits. texture, display, pallete
-		UX_PF_6666=100,							//!< not supported
-		UX_PF_8880=100,							//!< not supported
-		UX_PF_8888=GU_PSM_8888,					//!< 32 bits, 8 bits per component, 8 alpha bits. texture, display, pallete
-		UX_PF_2BIT=100,							//!< not supported
-		UX_PF_4BIT=GU_PSM_T4,					//!< Paletted format, 4 bits (16 colors). texture
-		UX_PF_8BIT=GU_PSM_T8,					//!< Paletted format, 8 bits (256 colors). texture
-		UX_PF_DXT1=GU_PSM_DXT1,					//!< DXT1 compressed. texture
-		UX_PF_DXT3=GU_PSM_DXT3,					//!< DXT3 compressed. texture
-		UX_PF_DXT5=GU_PSM_DXT5					//!< DXT5 compressed. texture
-	};
 
 	#define UXRGBA(r,g,b,a) ((r) | ((g)<<8) | ((b)<<16) | ((a)<<24))
 	#define UXR(x) ((x & 0xFF000000) >> 24)

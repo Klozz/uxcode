@@ -4,22 +4,6 @@
 	typedef int UX_MATRIX;
 	typedef int UX_MATRIX4;
 	
-	enum UX_PIXELFORMAT {
-		UX_PF_5650=100,							//!< 
-		UX_PF_5551=100,							//!< 
-		UX_PF_4444=100,							//!< 
-		UX_PF_6666=100,							//!< 
-		UX_PF_8880=100,							//!< 
-		UX_PF_8888=0,							//!< best-quality option by default
-		UX_PF_2BIT=100,							//!<
-		UX_PF_4BIT=100,							//!< 
-		UX_PF_8BIT=100,							//!< 
-		UX_PF_DXT1=100,							//!< 
-		UX_PF_DXT3=100,							//!< 
-		UX_PF_DXT5=100							//!< 
-	};
-	
-	
 	#define UXRGBA(r,g,b,a) (UXCOLOR){ (float)(r / 255.0f), (float)(g / 255.0f), (float)(b / 255.0f), (float)(a / 255.0f) }
 	#define UXR(x) x.r
 	#define UXG(x) x.g

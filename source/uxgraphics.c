@@ -32,6 +32,7 @@ Docs and manuals:
 
 
 /* Pero de forma bonita... */
+UX_GRAPHICSMODE graphics_mode;
 UX_IMAGE        dispBuffer;
 UX_IMAGE        drawBuffer;
 //static UX_FONT defFont;               /* Fuente por defecto */
@@ -60,37 +61,19 @@ UX_VIEWPORT     dView;                  /* Viewport por defecto */
  /**
   * \brief Graphics initialization
   */
-int uxgraphics_init() {
+int uxgraphics_init(UX_GRAPHICSMODE * window) {
 	if (uxgraphics_inited) { return 0; }
 	uxgraphics_in3D = 1;
-	uxmemset(&dView,0,sizeof(UX_VIEWPORT));
-	uxmemset(&dRender,0,sizeof(UX_RENDER));
-	uxmemset(&dispBuffer,0,sizeof(UX_IMAGE));
-	uxmemset(&drawBuffer,0,sizeof(UX_IMAGE));
+	
+	uxmemset(&dView,0,sizeof(UX_VIEWPORT));					// Reset viewport
+	uxmemset(&dRender,0,sizeof(UX_RENDER));					// Reset render
+	uxmemset(&dispBuffer,0,sizeof(UX_IMAGE));				// Reset display buffer
+	uxmemset(&drawBuffer,0,sizeof(UX_IMAGE));				// Reset draw buffer
 
 	/* CONFIGURACION DEL VIEWPORT */
 	dView.sync                      = 1;
-#if defined(PSP)
-	dView.width                     = 480;
-	dView.height                    = 272;
-	dView.x                         = 2048;
-	dView.y                         = 2048;
-	dRender.scissor_box         = (UX_INTBOX){0,0,480,272};
-#endif
-#if defined(WII)
-	dView.width                     = 678;
-	dView.height                    = 528;
-	dView.x                         = 0;
-	dView.y                         = 0;
-	dRender.scissor_box             = (UX_INTBOX){0,0,678,528};
-#endif
-#if defined(_WIN32)
-	dView.width                     = 800;
-	dView.height                    = 600;
-	dView.x                         = 0;
-	dView.y                         = 0;
-	dRender.scissor_box             = (UX_INTBOX){0,0,800,600};
-#endif
+	dView.window                    = (UX_INTBOX){window->w_width,window->w_height,window->width,window->height};
+	dRender.scissor_box             = (UX_INTBOX){0,0,window->width,window->height};
 	dView._near                     = 0;//10000;
 	dView._far                      = 60000;//50000;
 
@@ -101,8 +84,8 @@ int uxgraphics_init() {
 	dView.perspective3D._far        = 8000.0f;//1000.0f;
 	//Ortho 2D.
 	dView.ortho2D.left              = 0.0f;
-	dView.ortho2D.right             = dView.width;
-	dView.ortho2D.bottom            = dView.height;
+	dView.ortho2D.right             = dView.window.w;
+	dView.ortho2D.bottom            = dView.window.h;
 	dView.ortho2D.top               = 0.0f;
 	dView.ortho2D._near             = -1.0f;
 	dView.ortho2D._far              = 1.0f;
@@ -131,16 +114,10 @@ int uxgraphics_init() {
 	dRender.alphatest_reference     = 0;
 	dRender.scissor_enabled         = false;
 	
-	/* MALLOC BUFFERS Y ARRANQUE DEL SISTEMA */
-#if defined(_WIN32)
-	//Se necesitan las extensiones OpenGL:
-	if ( !GLEW_EXT_blend_func_separate ) { return -1; }
-	if ( GLEW_EXT_blend_logic_op ) { gl_logic_op_supported = 1; }
-	
-	dispBuffer.w                    = 800;
-	dispBuffer.h                    = 450;
-	dispBuffer.realw                = 800;
-	dispBuffer.realh                = 450;
+	dispBuffer.w                    = window->width;
+	dispBuffer.h                    = window->height;
+	dispBuffer.realw                = window->width;
+	dispBuffer.realh                = window->height;
 	dispBuffer.u0                   = 0.0f;
 	dispBuffer.v0                   = 0.0f;
 	dispBuffer.u1                   = 1.0f;
@@ -149,34 +126,34 @@ int uxgraphics_init() {
 	dispBuffer.dataSize             = 0;
 	uxmemcopy(&drawBuffer,&dispBuffer,sizeof(UX_IMAGE));
 	drawBuffer.ptr                  = NULL;
-#endif
-#if defined(PSP)
+
+	/* MALLOC BUFFERS Y ARRANQUE DEL SISTEMA */
+#if defined(_WIN32)
+
+	if ( !GLEW_EXT_blend_func_separate ) { return -1; }
+	if ( GLEW_EXT_blend_logic_op ) { gl_logic_op_supported = 1; }
+
+#elif defined(PSP)
+
 	uxgraphics_renderListMalloc(1 << 20);				/* 1mb lista 3D */
 	sceGuInit();
 	sceGuStart(GU_DIRECT, GX_G_3Dlist);
 	sceGuDisplay(0);									/* SCREEN OFF */
-	sceGuDrawBuffer(GU_PSM_8888,(void*)0,512);
-	sceGuDispBuffer(480,272,(void*)0x88000,512);		/* Display buffer, draw buffer */
+	sceGuDrawBuffer(uxgraphics_nearestPixelFormat(window->pixelFormat),(void*)0,512);
+	sceGuDispBuffer(window->width,window->height,(void*)0x88000,512);		/* Display buffer, draw buffer */
 	framebuffers[0] = (void*)PSP_UVRAM_BASE;
 	framebuffers[1] = (void*)(PSP_UVRAM_BASE + (0x88000));
 	sceGuDepthBuffer((void*)0x110000, 512);				/* Depth buffer config */
 
-	dispBuffer.w                    = 480;
-	dispBuffer.h                    = 272;
 	dispBuffer.realw                = 512;
 	dispBuffer.realh                = 272;
-	dispBuffer.u0                   = 0.0f;
-	dispBuffer.v0                   = 0.0f;
-	dispBuffer.u1                   = 1.0f;
-	dispBuffer.v1                   = 1.0f;
 	dispBuffer.ptr                  = framebuffers[0];
 	dispBuffer.dataSize             = (0x22000 * 32)>>3;
 	uxmemcopy(&drawBuffer,&dispBuffer,sizeof(UX_IMAGE));
 	drawBuffer.ptr                  = framebuffers[1];
-	
-	sceGuShadeModel(GU_SMOOTH);		// shade model?
-#endif
-#if defined(WII)
+	sceGuShadeModel(GU_SMOOTH);
+
+#elif defined(WII)
 	f32 yscale;
 	u32 xfbHeight;
 
@@ -220,6 +197,7 @@ int uxgraphics_init() {
 	GX_SetCopyFilter(rmode->aa, rmode->sample_pattern, GX_TRUE, rmode->vfilter);
 	GX_SetFieldMode(rmode->field_rendering, ((rmode->viHeight == 2 * rmode->xfbHeight) ? GX_ENABLE : GX_DISABLE));
 	GX_SetDispCopyGamma(GX_GM_1_0);
+
 #endif
 
 	uxgraphics_setViewport(dView,false);
@@ -262,6 +240,43 @@ int uxgraphics_init() {
 	return 0;
 }
 
+/**
+ ** PixelFormat
+ **/
+int uxgraphics_nearestPixelFormat(enum UX_PIXELFORMAT pf) {
+	#if defined(PSP)
+		switch (pf) {
+			case UX_PF_5650: return GU_PSM_5650;		
+			case UX_PF_5551: return GU_PSM_5551;
+			case UX_PF_4444: return GU_PSM_4444;
+			case UX_PF_6666: return GU_PSM_8888;
+			case UX_PF_8880: return GU_PSM_8888;
+			case UX_PF_8888: return GU_PSM_8888;
+			case UX_PF_2BIT: return GU_PSM_T4;
+			case UX_PF_4BIT: return GU_PSM_T4;
+			case UX_PF_8BIT: return GU_PSM_T8;
+			case UX_PF_DXT1: return GU_PSM_DXT1;
+			case UX_PF_DXT3: return GU_PSM_DXT3;
+			case UX_PF_DXT5: return GU_PSM_DXT5;
+		}
+	#elif defined(WII)
+		switch (pf) {
+			case UX_PF_5650: return GX_PF_RGB565_Z16;		
+			case UX_PF_8880: return GX_PF_RGB8_Z24;
+			default: return GX_PF_RGBA6_Z24;
+		}
+	#elif defined(NDS)
+		switch (pF) {
+			case UX_PF_4BIT: return 4;
+			case UX_PF_8BIT: return 8;
+			default: return 1555;
+		}
+	#elif defined(_WIN32)
+		return 1;
+	#endif
+}
+
+
 /*
  *  Algo de memoria para las listas 3D.
  */
@@ -278,16 +293,16 @@ void uxgraphics_renderListMalloc(int size) {
  */
 void uxgraphics_setViewport(UX_VIEWPORT view, int mode) {
 #if defined(_WIN32)
-	glViewport(view.x,view.y,view.width,view.height);
+	glViewport(view.window.x,view.window.y,view.window.w,view.window.h);
 	glDepthRange((double)(view._near / 0xFFFF),(double)(view._far / 0xFFFF));
 #endif
 #if defined(PSP)
-	sceGuOffset(view.x - (view.width/2),view.y - (view.height/2));
-	sceGuViewport(view.x,view.y,view.width,view.height);
+	sceGuOffset(view.window.x - (view.window.w >> 1),view.window.y - (view.window.h >> 1));
+	sceGuViewport(view.window.x,view.window.y,view.window.w,view.window.h);
 	sceGuDepthRange(view._far, view._near);
 #endif
 #if defined(WII)
-	GX_SetViewport((float)view.x, (float)view.y, (float)view.width, (float)view.height, (float)(view._near/0xFFFF), (float)(view._far/0xFFFF) );
+	GX_SetViewport((float)view.window.x, (float)view.window.y, (float)view.window.w, (float)view.window.h, (float)(view._near/0xFFFF), (float)(view._far/0xFFFF) );
 #endif
 }
 

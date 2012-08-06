@@ -2,6 +2,11 @@
 bin-debug/*.*
 build/*.*
 docs/*.*
+release/*.*
+release
+doxyfile
+docs
+build
 
 # Object files
 *.o

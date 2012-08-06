@@ -147,17 +147,20 @@ typedef unsigned short WORD;
 #endif
 
 /* UXCODE DEFINES */
-#include "uxcontrols.h"
-#include "uxmem.h"
-//#include "uxstrings.h"
-#include "uxcode.h"
-#include "uxfilesys.h"
-#include "uxmath.h"
-#include "uxgraphics.h"
-#include "uxrtc.h"
 #include "uxaudio.h"
-//#include "uxtime.h"
-//#include "uxluaapi.h"
-//#include "uxjsapi.h"
+#include "uxcode.h"
+#include "uxcontrols.h"
+#include "uxdisc.h"
+#include "uxfilesys.h"
+#include "uxgraphics.h"
+#include "uximages.h"
+#include "uximages.h"
+#include "uxmath.h"
+#include "uxmem.h"
+#include "uxnet.h"
+#include "uxrtc.h"
+#include "uxstrings.h"
+#include "uxusb.h"
+#include "uxvertex.h"
 
 #endif

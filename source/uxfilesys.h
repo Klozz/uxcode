@@ -6,24 +6,27 @@
 	#define UXFILESYS_DIRSEP	'\\'
 	#define UXFILEHANDLE        FILE *
 	#define UXFILENILHANDLE     NULL
+	#define UXFILESIZE_T size_t
 #elif defined(PSP)
     #define UXFILESYS_EXTSEP    '.'
 	#define UXFILESYS_DIRSEP	'/'
     #define UXFILEHANDLE        FILE *
     #define UXFILENILHANDLE     NULL
+	#define UXFILESIZE_T size_t
 #elif defined(WII)
     #define UXFILESYS_EXTSEP    '.'
 	#define UXFILESYS_DIRSEP	'/'
     #define UXFILEHANDLE        FILE *
     #define UXFILENILHANDLE     NULL
+	#define UXFILESIZE_T size_t
 	
 	typedef enum {PI_DEFAULT, PI_SDGECKO_A, PI_SDGECKO_B, PI_INTERNAL_SD, PI_CUSTOM } PARTITION_INTERFACE;
 #endif
-  
+
 typedef FILE UXFILE;
 #define UXFILEPATHMAXLENGTH     256
 
-  
+
 /* initialization */
 extern unsigned int uxfiles_inited;
 extern int          uxfilesys_init();

@@ -39,10 +39,10 @@ typedef struct {
 
 /** A 2D integer box. */
 typedef struct { 
-	int x;		//!< X position of the top left corner.
-	int y;		//!< Y position of the top left corner.
-	int w;		//!< Width of the box.
-	int h;		//!< Height of the box.
+	unsigned int x;		//!< X position of the top left corner.
+	unsigned int y;		//!< Y position of the top left corner.
+	unsigned int w;		//!< Width of the box.
+	unsigned int h;		//!< Height of the box.
 } UX_INTBOX;
 
 
@@ -54,10 +54,27 @@ typedef struct {
 #include "uxvertex.h"
 #include "uximages.h"
 
+enum UX_PIXELFORMAT {
+	UX_PF_5650,					//!< 16 bits, 5 bits per component, except green which has 6, no alpha.	texture, display, pallete
+	UX_PF_5551,					//!< 15 bits, 5 bits per component, 1 alpha bit. texture, display, pallete
+	UX_PF_4444,					//!< 12 bits, 4 bits per component, 4 alpha bits. texture, display, pallete
+	UX_PF_6666,					//!< 24 bits, 6 bits per component
+	UX_PF_8880,					//!< 24 bits, 8 bits per component, no alpha
+	UX_PF_8888,					//!< 32 bits, 8 bits per component, 8 alpha bits. texture, display, pallete
+	UX_PF_2BIT,					//!< 2 color palleted.
+	UX_PF_4BIT,					//!< Paletted format, 4 bits (16 colors). texture
+	UX_PF_8BIT,					//!< Paletted format, 8 bits (256 colors). texture
+	UX_PF_DXT1,					//!< DXT1 compressed. texture
+	UX_PF_DXT3,					//!< DXT3 compressed. texture
+	UX_PF_DXT5					//!< DXT5 compressed. texture
+};
+	
 /** Graphics initialize structure */
 typedef struct UX_GRAPHICSMODE {
 	unsigned int width;						//!< Graphics mode / window mode width, if needed.
 	unsigned int height;					//!< Graphics mode / window mode height, if needed.
+	unsigned int w_width;
+	unsigned int w_height;
 	enum UX_PIXELFORMAT pixelFormat;		//!< Graphics pixelformat, if needed.
 	unsigned int extras;					//!< Extra-per-platform flags.
 } UX_GRAPHICSMODE;
@@ -87,6 +104,8 @@ typedef struct UX_RENDER {
 	int blending_dst_function;				//!< Blend destination color function
 	int blending_logic;						//!< Blend logic operation &,|,~...
 	
+	int shade_model;
+	
 	int scissor_enabled;					//!< Scissoring enabled
 	UX_INTBOX scissor_box;					//!< Scissor box: {x,y,w,h}
 } UX_RENDER;
@@ -94,10 +113,11 @@ typedef struct UX_RENDER {
 /* Viewport configuration structure. */
 typedef struct UX_VIEWPORT {
 	unsigned int sync;					//!< Video syncing (wait for scanlines).
-	unsigned int width;					//!< Screen width 
-	unsigned int height;				//!< Screen height
-	unsigned int x;						//!< UNDOC x
-	unsigned int y;						//!< UNDOC y
+	UX_INTBOX window;					//!< Screen box.
+	//unsigned int width;					//!< Screen width 
+	//unsigned int height;				//!< Screen height
+	//unsigned int x;						//!< UNDOC x
+	//unsigned int y;						//!< UNDOC y
 	unsigned int _near;					//!< UNDOC near
 	unsigned int _far;					//!< UNDOC far
 	struct { float fovy; float aspect; float _near; float _far; } perspective3D;
@@ -126,13 +146,15 @@ extern UX_IMAGE		dispBuffer;		//!< Display buffer abstraction to image.
 extern UX_IMAGE		drawBuffer;		//!< Draw buffer abstraction to image.
 extern UX_RENDER	dRender;		//!< Current active render.
 extern UX_VIEWPORT	dView;			//!< Current active viewport.
-
+extern UX_GRAPHICSMODE graphics_mode; //!< Graphics init mode.
 
 /*************************
  * Functions             *
  *************************/
-extern int uxgraphics_init();		//!< Initialize graphics subsystem
+extern int uxgraphics_init(UX_GRAPHICSMODE * window);		//!< Initialize graphics subsystem
 extern void uxgraphics_shutdown();	//!< Deinitialize graphics subsytem
+
+extern int uxgraphics_nearestPixelFormat(enum UX_PIXELFORMAT pf);
 
 extern void uxgraphics_setViewMode(UX_VIEWPORT view /*!< [in] vie */, int force2D, int force3D);
 extern void uxgraphics_setViewport(UX_VIEWPORT view, int mode);
