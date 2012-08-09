@@ -59,20 +59,22 @@ uxfilesys.o: c:/uxcode/source/uxfilesys.c c:/uxcode/source/utils.h \
  c:/devkitPro/libogc/include/wiiuse/wiiuse.h \
  c:/devkitPro/libogc/include/bte/bte.h \
  c:/devkitPro/libogc/include/bte/bd_addr.h \
- c:/devkitPro/libogc/include/mii.h c:/uxcode/source/uxcontrols.h \
- c:/uxcode/source/uxcontrols/psp.h c:/uxcode/source/uxcontrols/nds.h \
- c:/uxcode/source/uxcontrols/win.h c:/uxcode/source/uxcontrols/wii.h \
- c:/uxcode/source/uxmem.h c:/uxcode/source/uxmem/nds.h \
- c:/uxcode/source/uxmem/wii.h c:/uxcode/source/uxmem/psp.h \
- c:/uxcode/source/uxmem/win.h c:/uxcode/source/uxcode.h \
- c:/uxcode/source/uxfilesys.h c:/uxcode/source/uxmath.h \
- c:/uxcode/source/uxmath/psp.h c:/uxcode/source/uxmath/nds.h \
- c:/uxcode/source/uxmath/win.h c:/uxcode/source/uxmath/wii.h \
- c:/uxcode/source/uxgraphics.h c:/uxcode/source/uxgraphics/psp.h \
- c:/uxcode/source/uxgraphics/nds.h c:/uxcode/source/uxgraphics/win.h \
- c:/uxcode/source/uxgraphics/wii.h c:/uxcode/source/uxvertex.h \
- c:/uxcode/source/uximages.h c:/uxcode/source/uxrtc.h \
- c:/uxcode/source/uxaudio.h c:/uxcode/source/uxaudio/win.h
+ c:/devkitPro/libogc/include/mii.h c:/uxcode/source/uxaudio.h \
+ c:/uxcode/source/uxaudio/win.h c:/uxcode/source/uxcode.h \
+ c:/uxcode/source/uxcontrols.h c:/uxcode/source/uxcontrols/psp.h \
+ c:/uxcode/source/uxcontrols/nds.h c:/uxcode/source/uxcontrols/win.h \
+ c:/uxcode/source/uxcontrols/wii.h c:/uxcode/source/uxdisc.h \
+ c:/uxcode/source/uxfilesys.h c:/uxcode/source/uxgraphics.h \
+ c:/uxcode/source/uxgraphics/psp.h c:/uxcode/source/uxgraphics/nds.h \
+ c:/uxcode/source/uxgraphics/win.h c:/uxcode/source/uxgraphics/wii.h \
+ c:/uxcode/source/uxvertex.h c:/uxcode/source/uximages.h \
+ c:/uxcode/source/uxmath.h c:/uxcode/source/uxmath/psp.h \
+ c:/uxcode/source/uxmath/nds.h c:/uxcode/source/uxmath/win.h \
+ c:/uxcode/source/uxmath/wii.h c:/uxcode/source/uxmem.h \
+ c:/uxcode/source/uxmem/nds.h c:/uxcode/source/uxmem/wii.h \
+ c:/uxcode/source/uxmem/psp.h c:/uxcode/source/uxmem/win.h \
+ c:/uxcode/source/uxnet.h c:/uxcode/source/uxrtc.h \
+ c:/uxcode/source/uxstrings.h c:/uxcode/source/uxusb.h
 
 c:/uxcode/source/utils.h:
 
@@ -198,6 +200,12 @@ c:/devkitPro/libogc/include/bte/bd_addr.h:
 
 c:/devkitPro/libogc/include/mii.h:
 
+c:/uxcode/source/uxaudio.h:
+
+c:/uxcode/source/uxaudio/win.h:
+
+c:/uxcode/source/uxcode.h:
+
 c:/uxcode/source/uxcontrols.h:
 
 c:/uxcode/source/uxcontrols/psp.h:
@@ -208,29 +216,9 @@ c:/uxcode/source/uxcontrols/win.h:
 
 c:/uxcode/source/uxcontrols/wii.h:
 
-c:/uxcode/source/uxmem.h:
-
-c:/uxcode/source/uxmem/nds.h:
-
-c:/uxcode/source/uxmem/wii.h:
-
-c:/uxcode/source/uxmem/psp.h:
-
-c:/uxcode/source/uxmem/win.h:
-
-c:/uxcode/source/uxcode.h:
+c:/uxcode/source/uxdisc.h:
 
 c:/uxcode/source/uxfilesys.h:
-
-c:/uxcode/source/uxmath.h:
-
-c:/uxcode/source/uxmath/psp.h:
-
-c:/uxcode/source/uxmath/nds.h:
-
-c:/uxcode/source/uxmath/win.h:
-
-c:/uxcode/source/uxmath/wii.h:
 
 c:/uxcode/source/uxgraphics.h:
 
@@ -246,8 +234,30 @@ c:/uxcode/source/uxvertex.h:
 
 c:/uxcode/source/uximages.h:
 
+c:/uxcode/source/uxmath.h:
+
+c:/uxcode/source/uxmath/psp.h:
+
+c:/uxcode/source/uxmath/nds.h:
+
+c:/uxcode/source/uxmath/win.h:
+
+c:/uxcode/source/uxmath/wii.h:
+
+c:/uxcode/source/uxmem.h:
+
+c:/uxcode/source/uxmem/nds.h:
+
+c:/uxcode/source/uxmem/wii.h:
+
+c:/uxcode/source/uxmem/psp.h:
+
+c:/uxcode/source/uxmem/win.h:
+
+c:/uxcode/source/uxnet.h:
+
 c:/uxcode/source/uxrtc.h:
 
-c:/uxcode/source/uxaudio.h:
+c:/uxcode/source/uxstrings.h:
 
-c:/uxcode/source/uxaudio/win.h:
+c:/uxcode/source/uxusb.h:
