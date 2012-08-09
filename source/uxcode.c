@@ -16,7 +16,6 @@ void ux_atexit(void) {
 
 int ux_main(int argc, char *argv[]) {
     /* Prepare screen by platform */
-
     #if defined(PSP)
 		graphics_mode.width = 480;
 		graphics_mode.height = 272;
@@ -62,8 +61,6 @@ int ux_main(int argc, char *argv[]) {
 		
 		
 		#ifdef PSP
-			if (controls.psppad.held.up!=0) { dView.sync = 0; } 
-			else { dView.sync = 1; }
 			//if (cnt==100) {
 				UX_IMAGE *test;
 				UX_MESH *mesh;

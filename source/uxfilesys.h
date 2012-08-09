@@ -4,19 +4,25 @@
 #if defined(_WIN32)
     #define UXFILESYS_EXTSEP    '.'
 	#define UXFILESYS_DIRSEP	'\\'
+	#define UXFILESYS_DIRSEPS	"\\"
 	#define UXFILEHANDLE        FILE *
+	#define UXFILEDIRENTRY		DIR
 	#define UXFILENILHANDLE     NULL
 	#define UXFILESIZE_T size_t
 #elif defined(PSP)
     #define UXFILESYS_EXTSEP    '.'
 	#define UXFILESYS_DIRSEP	'/'
+	#define UXFILESYS_DIRSEPS	"/"
     #define UXFILEHANDLE        FILE *
+	#define UXFILEDIRENTRY		SceIoDirent
     #define UXFILENILHANDLE     NULL
 	#define UXFILESIZE_T size_t
 #elif defined(WII)
     #define UXFILESYS_EXTSEP    '.'
 	#define UXFILESYS_DIRSEP	'/'
+	#define UXFILESYS_DIRSEPS	"/"
     #define UXFILEHANDLE        FILE *
+	#define UXFILEDIRENTRY		DIR
     #define UXFILENILHANDLE     NULL
 	#define UXFILESIZE_T size_t
 	
