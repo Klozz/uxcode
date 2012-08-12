@@ -27,7 +27,9 @@ void *uxmemalign(UXFILESIZE_T blocksize, UXFILESIZE_T size) {
 
 void *uxmembyteswap(int* s, int size) { 
 	int i, a; 
-	for(i=0;i<size;i++) { a = s[i]; s[i] = intswap(a); }
+	for(i=0;i<size;i++) {
+		a = s[i]; s[i] = intswap(a);
+	}
 	return s;
 }
 

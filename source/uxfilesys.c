@@ -173,16 +173,21 @@ int uxfile_dopen(const char *path) {
 	#ifdef PSP
 		return sceIoDopen(path);
 	#endif
+	return 0;
 }
 
 int uxfile_dclose(int id) {
-	return sceIoDclose(id);
+	#ifdef PSP
+		return sceIoDclose(id);
+	#endif
+	return 0;
 }
 
 int uxfile_dread(const char *path, UXFILEDIRENTRY *entry) {
 	#ifdef PSP
 		return sceIoDread(path,entry);
 	#endif
+	return 0;
 }
 
 int uxfile_removedir(const char *path) {

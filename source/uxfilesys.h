@@ -30,6 +30,23 @@
 #endif
 
 typedef FILE UXFILE;
+
+
+// TODO: replace UXFILES with NEXT_UXFILES. (virtual files implementation)
+typedef struct NEXT_UXFILE {	// future implementation of uxfiles.
+	// handle + re-open properties
+	UXFILEHANDLE handle;
+	char * path;
+	char * mode;
+
+	// buffer properties
+	unsigned int type;			// virtual || physical
+	unsigned char * buffer;
+	UXFILESIZE_T buffersize;
+	UXFILESIZE_T filesize;
+	UXFILESIZE_T position;
+} NEXT_UXFILE;
+
 #define UXFILEPATHMAXLENGTH     256
 
 
