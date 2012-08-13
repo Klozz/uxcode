@@ -4,57 +4,57 @@ int uxdisc_inited  = false;
 int uxdisc_mounted = false;
 
 int uxdisc_waitfordisc() {
-    #if defined(PSP)
-        if (uxdisc_check() == false) { sceUmdWaitDriveStat(PSP_UMD_PRESENT); }
-    #endif
+	#if defined(PSP)
+		if (uxdisc_check() == false) { sceUmdWaitDriveStat(PSP_UMD_PRESENT); }
+	#endif
 }
 
 int uxdisc_check() {
-    #if defined(PSP)
-        return (sceUmdCheckMedium() != 0);
-    #else
-        return false;
-    #endif
+	#if defined(PSP)
+		return (sceUmdCheckMedium() != 0);
+	#else
+		return false;
+	#endif
 }
 
 int uxdisc_mount() {
-    int status;
-    if (uxdisc_mounted==true) { return false; }
+	int status;
+	if (uxdisc_mounted==true) { return false; }
 
-    #if defined(PSP)
-        if (uxdisc_check() == true) {
-            sceUmdActivate(1, "disc0:");
-            status = sceUmdWaitDriveStatWithTimer(UMD_WAITFORINIT, 5000000); // 5 secs timeout.
-            uxdisc_mounted = (status >= 0);
-            return (uxdisc_mounted==true);
-        }
-        return false;
-    #else
-        return false;
-    #endif
+	#if defined(PSP)
+		if (uxdisc_check() == true) {
+			sceUmdActivate(1, "disc0:");
+			status = sceUmdWaitDriveStatWithTimer(UMD_WAITFORINIT, 5000000); // 5 secs timeout.
+			uxdisc_mounted = (status >= 0);
+			return (uxdisc_mounted==true);
+		}
+		return false;
+	#else
+		return false;
+	#endif
 }
 
 int uxdisc_unmount() {
-    int status;
-    if (uxdisc_mounted==false) { return false; }
+	int status;
+	if (uxdisc_mounted==false) { return false; }
 
-    #if defined(PSP)
-        status = sceUmdDeactivate(1,"disc0:");
-        uxdisc_mounted = (status >= 0);
-        return (uxdisc_mounted==false);
-    #else
-        return false;
-    #endif
+	#if defined(PSP)
+		status = sceUmdDeactivate(1,"disc0:");
+		uxdisc_mounted = (status >= 0);
+		return (uxdisc_mounted==false);
+	#else
+		return false;
+	#endif
 }
 
 void uxdisc_init() {
 	if (uxdisc_inited) { return; }
-    uxdisc_mount();
-    uxdisc_inited = true;
+	uxdisc_mount();
+	uxdisc_inited = true;
 }
 
 void uxdisc_shutdown() {
-    if (not uxdisc_inited) { return; }
-    uxdisc_unmount();
-    uxdisc_inited = false;
+	if (not uxdisc_inited) { return; }
+	uxdisc_unmount();
+	uxdisc_inited = false;
 }
