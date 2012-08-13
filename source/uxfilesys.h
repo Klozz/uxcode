@@ -5,7 +5,7 @@
     #define UXFILESYS_EXTSEP    '.'
 	#define UXFILESYS_DIRSEP	'\\'
 	#define UXFILESYS_DIRSEPS	"\\"
-	#define UXFILEHANDLE        FILE *
+	#define UXFILEHANDLE        FILE
 	#define UXFILEDIRENTRY		DIR
 	#define UXFILENILHANDLE     NULL
 	#define UXFILESIZE_T size_t
@@ -13,7 +13,7 @@
     #define UXFILESYS_EXTSEP    '.'
 	#define UXFILESYS_DIRSEP	'/'
 	#define UXFILESYS_DIRSEPS	"/"
-    #define UXFILEHANDLE        FILE *
+    #define UXFILEHANDLE        FILE
 	#define UXFILEDIRENTRY		SceIoDirent
     #define UXFILENILHANDLE     NULL
 	#define UXFILESIZE_T size_t
@@ -21,7 +21,7 @@
     #define UXFILESYS_EXTSEP    '.'
 	#define UXFILESYS_DIRSEP	'/'
 	#define UXFILESYS_DIRSEPS	"/"
-    #define UXFILEHANDLE        FILE *
+    #define UXFILEHANDLE        FILE
 	#define UXFILEDIRENTRY		DIR
     #define UXFILENILHANDLE     NULL
 	#define UXFILESIZE_T size_t
@@ -29,23 +29,23 @@
 	typedef enum {PI_DEFAULT, PI_SDGECKO_A, PI_SDGECKO_B, PI_INTERNAL_SD, PI_CUSTOM } PARTITION_INTERFACE;
 #endif
 
-typedef FILE UXFILE;
+typedef enum {UX_F_VIRTUAL, UX_F_NORMAL} UXFILEOPENMODE;
+#define UXFILE_DEFAULT_BUFFER_SIZE 200000
 
-
-// TODO: replace UXFILES with NEXT_UXFILES. (virtual files implementation)
-typedef struct NEXT_UXFILE {	// future implementation of uxfiles.
+typedef struct UXFILE {
 	// handle + re-open properties
-	UXFILEHANDLE handle;
+	UXFILEHANDLE * handle;
 	char * path;
 	char * mode;
 
 	// buffer properties
-	unsigned int type;			// virtual || physical
+	enum UXFILEOPENMODE openmode;
 	unsigned char * buffer;
 	UXFILESIZE_T buffersize;
 	UXFILESIZE_T filesize;
 	UXFILESIZE_T position;
-} NEXT_UXFILE;
+	int buffermodified;
+} UXFILE;
 
 #define UXFILEPATHMAXLENGTH     256
 
@@ -56,8 +56,7 @@ extern int          uxfilesys_init();
 extern void         uxfilesys_shutdown();
 
 /* ansi fopen equivalents */
-extern UXFILE *uxfopen(char *fpath, char *modes);
-extern UXFILE *uxfile_open(char *fpath, unsigned char fmode, char *modes);
+extern UXFILE * uxfopen(const char *fpath, const char *modes, enum UXFILEOPENMODE mode);
 extern UXFILESIZE_T uxfread(UXFILE *ptr, void *data, UXFILESIZE_T size);
 extern UXFILESIZE_T uxfwrite(UXFILE *ptr,void *data, UXFILESIZE_T size);
 extern void uxfflush(UXFILE *ptr);

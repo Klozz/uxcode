@@ -45,24 +45,48 @@ void uxfilesys_shutdown() {
 	return;
 }
 
-UXFILE *uxfopen(char *fpath, char *modes) {
-	return fopen(fpath,modes);
+extern UXFILE * uxfopen(const char *fpath, const char *modes, enum UXFILEOPENMODE mode) {
+	UXFILE * file  = NULL;
+
+	file = (UXFILE *)uxmemalloc(sizeof(UXFILE));
+	uxmemset( file , 0, sizeof(UXFILE) );
+	file->openmode = mode;
+
+	if (mode == UX_F_NORMAL) {
+		// Physical (normal)
+		file->handle = fopen(fpath,modes);
+		if (file->handle == NULL) { uxmemfree(file); return NULL; }
+		file->path = uxstring_dup(fpath);
+		file->buffer = NULL;
+		file->buffersize = 0;
+		file->filesize = uxfile_fsize(fpath);
+		file->position = 0;
+	} else {
+		// Virtual
+
+	}
+
+	return file;
 }
 
 UXFILESIZE_T uxfwrite(UXFILE *ptr,void *data, UXFILESIZE_T size) {
-	return fwrite(data,1,size,ptr);
+	if (ptr->handle != NULL) { return fwrite(data,1,size,ptr); }
+	return 0;
 }
 
 UXFILESIZE_T uxfread(UXFILE *ptr, void *data, UXFILESIZE_T size) {
-	return fread(data,1,size,ptr);
+	if (ptr->handle != NULL) { return fread(data,1,size,ptr); }
+	return 0;
 }
 
 int uxfseek(UXFILE *ptr, UXFILESIZE_T s,int t) {
-	return fseek(ptr,s,t);
+	if (ptr->handle != NULL) { return fseek(ptr,s,t); }
+	return 0;
 }
 
 int uxfclose(UXFILE *ptr) {
-	return fclose(ptr);
+	if (ptr->handle != NULL) { return fclose(ptr); }
+	return 0;
 }
 
 void uxfflush(UXFILE *ptr) {
@@ -73,7 +97,7 @@ void uxfflush(UXFILE *ptr) {
 		sceIoSync("host0:",0);	/* PSPLINK */
 		sceIoSync("ef0:",0);	/* PSPGO */
 	#endif
-	fflush(ptr);
+	if (ptr->handle != NULL) { fflush(ptr); }
 }
 
 //  read routines
