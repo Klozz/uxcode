@@ -1,29 +1,7 @@
 #ifndef UXMEMORY_H
 #define UXMEMORY_H
 
-
-// Platform dependent defines:
-#include "uxmem/nds.h"
-#include "uxmem/wii.h"
-#include "uxmem/psp.h"
-#include "uxmem/win.h"
-
-
-// VRAM Manager	[platform dependant]
 extern void uxmemory_init();
-
-
-
-// RAM Manager
-
-
-
-
-
-
-
-
-
 #if defined(_WIN32)
 	#define uxmemalign(x,y) uxmemalloc(y)
 #else

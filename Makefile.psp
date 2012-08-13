@@ -3,12 +3,14 @@ UXCORE_O	=	source/uxcode.o \
 				source/uxmem.o \
 				source/uxcontrols.o \
 				source/uxfilesys.o \
+				source/uxfont.o \
 				source/uximages.o \
 				source/uxvertex.o \
 				source/uxgraphics.o \
 				source/uxmath.o \
 				source/uxstrings.o \
 				source/uxrtc.o \
+				source/uxusb.o \
 				source/utils.o
 
 COMMON_O	=	$(UXCORE_O)
@@ -30,10 +32,11 @@ CXXFLAGS 			= $(CFLAGS) -fno-exceptions -fno-rtti
 ASFLAGS 			= $(CFLAGS)
 OBJS 				= $(COMMON_O)
 
-LIBRERIAS1 			= -lpspsystemctrl_kernel -lpspgum -lpspge -lpspgum_vfpu -lpspgu -lpsppower 
-LIBRERIAS2 			= -lpspumd -lpsphprm -lpspaudio -lpspaudiocodec -lpspmath -lpspusb -lpspusbstor -lpspusbcam -lpsputility -lpspwlan
-LIBRERIAS3 			= -lpspkubridge -lpng -ljpeg -lz -lpsprtc -lpspssl -lpsphttp -lm -lpspsdk -lpspjpeg -lzzip -lpspopenpsid
-LIBS				= $(LIBRERIAS1) $(LIBRERIAS2) $(LIBRERIAS3)
+LIBRERIAS 			= -lpspsystemctrl_kernel -lpspgum -lpspge -lpspgum_vfpu -lpspgu -lpsppower \
+					  -lpspumd -lpsphprm -lpspaudio -lpspaudiocodec -lpspmath -lpspusbdevice -lpspusb \
+					  -lpspusbstor -lpspusbcam -lpsputility -lpspwlan -lpspkubridge -lpng -ljpeg -lz \ 
+					  -lpsprtc -lpspssl -lpsphttp -lm -lpspsdk -lpspjpeg -lzzip -lpspopenpsid
+LIBS				= $(LIBRERIAS)
 PSPSDK				= $(shell psp-config --pspsdk-path)
 
 include $(PSPSDK)/lib/build.mak
