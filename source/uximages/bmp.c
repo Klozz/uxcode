@@ -39,7 +39,7 @@ static UX_IMAGE *uximages_loadimageBMP(char *file, u32* result, int mipmap) {
 	
 	unsigned int crow 		= 0;
 	
-	archivo = uxfopen(file,"rb"); if (!archivo) { *result = UX_MSG_CNT_OPN; return NULL; }
+	archivo = uxfopen(file,"rb",UX_F_NORMAL); if (!archivo) { *result = UX_MSG_CNT_OPN; return NULL; }
 	uxfseek(archivo,0x02,SEEK_SET);
 	uxf_readu32(archivo,finfo,4,BS);
 	switch (finfo[3]) {

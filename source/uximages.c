@@ -163,7 +163,7 @@ UX_IMAGE *uximages_loadimage(char *file) {
 	u32 readd 		= 0;
 	u32 r			= 0;
 
-	uxmemset(header,0,sizeof(header)); archivo = uxfopen(file,"rb"); if (!archivo) { return NULL; }								/* abrir archivo */
+	uxmemset(header,0,sizeof(header)); archivo = uxfopen(file,"rb",UX_F_NORMAL); if (!archivo) { return NULL; }								/* abrir archivo */
 	readd = uxfread(archivo,&header,24);																						/* leer header   */
 	if ( readd < 8 ) { uxfclose(archivo); return NULL; }																		/* min(8 bytes)  */
 	uxfclose(archivo);																											/* close 		 */
