@@ -1,4 +1,13 @@
-#ifndef UXCONTROLS_H
+/*
+ * uxcontrols.h
+ * This file is used to manage controls and keyboards subsystem in the UXcode library.
+ * uxcode Version 0.1 by DeViaNTe - http://www.gcrew.es
+ *
+ * This work is licensed under the Creative Commons Attribution-Share Alike 3.0 License.
+ * See LICENSE for more details.
+ *
+ */
+ #ifndef UXCONTROLS_H
 #define UXCONTROLS_H
 
 #include "uxcontrols/psp.h"

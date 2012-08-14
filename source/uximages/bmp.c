@@ -1,4 +1,14 @@
 /*
+ * bmp.c
+ * This file is used to load BMP file-format.
+ * uxcode Version 0.1 by DeViaNTe - http://www.gcrew.es
+ *
+ * This work is licensed under the Creative Commons Attribution-Share Alike 3.0 License.
+ * See LICENSE for more details.
+ *
+ */
+
+ /*
  * BMP loading routine (standard 16,24,32bpp. uncompressed)
  * 
  * ToDo:
