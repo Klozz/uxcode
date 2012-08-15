@@ -12,34 +12,37 @@
 #define UXFILESYS_H
 
 #if defined(_WIN32)
-    #define UXFILESYS_EXTSEP    '.'
-	#define UXFILESYS_DIRSEP	'\\'
-	#define UXFILESYS_DIRSEPS	"\\"
+	#define UXFILESYS_EXTSEP    '.'
+	#define UXFILESYS_DIRSEP    '\\'
+	#define UXFILESYS_DIRSEPS   "\\"
 	#define UXFILEHANDLE        FILE
-	#define UXFILEDIRENTRY		DIR
+	#define UXFILEDIRHANDLE     DIR *
+	#define UXFILEDIRENTRY      struct dirent
 	#define UXFILENILHANDLE     NULL
 	#define UXFILESIZE_T size_t
 #elif defined(PSP)
-    #define UXFILESYS_EXTSEP    '.'
-	#define UXFILESYS_DIRSEP	'/'
-	#define UXFILESYS_DIRSEPS	"/"
-    #define UXFILEHANDLE        FILE
-	#define UXFILEDIRENTRY		SceIoDirent
-    #define UXFILENILHANDLE     NULL
+	#define UXFILESYS_EXTSEP    '.'
+	#define UXFILESYS_DIRSEP    '/'
+	#define UXFILESYS_DIRSEPS   "/"
+	#define UXFILEHANDLE        FILE
+	#define UXFILEDIRHANDLE     SceUID
+	#define UXFILEDIRENTRY      SceIoDirent
+	#define UXFILENILHANDLE     NULL
 	#define UXFILESIZE_T size_t
 #elif defined(WII)
-    #define UXFILESYS_EXTSEP    '.'
-	#define UXFILESYS_DIRSEP	'/'
-	#define UXFILESYS_DIRSEPS	"/"
-    #define UXFILEHANDLE        FILE
-	#define UXFILEDIRENTRY		DIR
-    #define UXFILENILHANDLE     NULL
+	#define UXFILESYS_EXTSEP    '.'
+	#define UXFILESYS_DIRSEP    '/'
+	#define UXFILESYS_DIRSEPS   "/"
+	#define UXFILEHANDLE        FILE
+	#define UXFILEDIRHANDLE     DIR *
+	#define UXFILEDIRENTRY      struct dirent
+	#define UXFILENILHANDLE     NULL
 	#define UXFILESIZE_T size_t
 	
 	typedef enum {PI_DEFAULT, PI_SDGECKO_A, PI_SDGECKO_B, PI_INTERNAL_SD, PI_CUSTOM } PARTITION_INTERFACE;
 #endif
 
-typedef enum {UX_F_VIRTUAL, UX_F_NORMAL} UXFILEOPENMODE;
+typedef enum UXFILEOPENMODE {UX_F_VIRTUAL, UX_F_NORMAL} UXFILEOPENMODE;
 #define UXFILE_DEFAULT_BUFFER_SIZE 200000
 
 typedef struct UXFILE {
@@ -73,6 +76,10 @@ extern void uxfflush(UXFILE *ptr);
 extern int uxfclose(UXFILE *ptr);
 extern int uxfseek(UXFILE *ptr, UXFILESIZE_T s,int t);
 
+extern UXFILEDIRHANDLE uxfile_dopen(const char *path);
+extern int uxfile_dclose(UXFILEDIRHANDLE id);
+extern int uxfile_dread(UXFILEDIRHANDLE dirp, UXFILEDIRENTRY *entry);
+
 /* read routines */
 extern int uxf_readu32(UXFILE *ptr, u32* dest, int n, int bswap);
 extern int uxf_readu16(UXFILE *ptr, u16* dest, int n, int bswap);
@@ -85,8 +92,13 @@ extern u32 uxf_getDWord(UXFILE *ptr);
 extern void uxf_getString(u8 * str, int len, UXFILE *ptr);
 
 /* file/dir functions */
-extern int uxfile_exists(char *fpath);
-extern UXFILESIZE_T uxfile_fsize(char *fpath);
+extern int uxfile_remove_recursive(const char *path, int recursive);
+extern int uxfile_removedir(const char *path);
+extern int uxfile_removefile(const char *path);
+
+extern int uxfile_exists(const char *fpath);
+extern UXFILESIZE_T uxfile_fsize(const char *fpath);
+extern int uxfile_ftype(const char *fpath);
 extern char *uxfile_ext(char *fpath, unsigned int * len);
 extern int uxfile_tmpname(char *in);
 

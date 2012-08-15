@@ -80,22 +80,22 @@ extern UXFILE * uxfopen(const char *fpath, const char *modes, enum UXFILEOPENMOD
 }
 
 UXFILESIZE_T uxfwrite(UXFILE *ptr,void *data, UXFILESIZE_T size) {
-	if (ptr->handle != NULL) { return fwrite(data,1,size,ptr); }
+	if (ptr->handle != NULL) { return fwrite(data,1,size,ptr->handle); }
 	return 0;
 }
 
 UXFILESIZE_T uxfread(UXFILE *ptr, void *data, UXFILESIZE_T size) {
-	if (ptr->handle != NULL) { return fread(data,1,size,ptr); }
+	if (ptr->handle != NULL) { return fread(data,1,size,ptr->handle); }
 	return 0;
 }
 
 int uxfseek(UXFILE *ptr, UXFILESIZE_T s,int t) {
-	if (ptr->handle != NULL) { return fseek(ptr,s,t); }
+	if (ptr->handle != NULL) { return fseek(ptr->handle,s,t); }
 	return 0;
 }
 
 int uxfclose(UXFILE *ptr) {
-	if (ptr->handle != NULL) { return fclose(ptr); }
+	if (ptr->handle != NULL) { return fclose(ptr->handle); }
 	return 0;
 }
 
@@ -107,7 +107,7 @@ void uxfflush(UXFILE *ptr) {
 		sceIoSync("host0:",0);	/* PSPLINK */
 		sceIoSync("ef0:",0);	/* PSPGO */
 	#endif
-	if (ptr->handle != NULL) { fflush(ptr); }
+	if (ptr->handle != NULL) { fflush(ptr->handle); }
 }
 
 //  read routines
@@ -158,7 +158,7 @@ void uxf_getString(u8 * str, int len, UXFILE *ptr) {
 
 
 /* file utils */
-int uxfile_exists(char *fpath) {
+int uxfile_exists(const char *fpath) {
 	#if defined(PSP)
 		SceIoStat stat;
 		return (sceIoGetstat(fpath,&stat) >= 0);
@@ -171,20 +171,29 @@ int uxfile_exists(char *fpath) {
 	#endif
 }
 
-UXFILESIZE_T uxfile_fsize(char *fpath) {
+UXFILESIZE_T uxfile_fsize(const char *fpath) {
 	#if defined(PSP)
-		UXFILESIZE_T size;
 		SceIoStat stat;
 		sceIoGetstat(fpath,&stat);
-		size = stat.st_size;
-		return size;
+		return stat.st_size;
 	#elif defined(_WIN32) || defined(WII)
-		UXFILESIZE_T size;
-		UXFILEHANDLE file = fopen(fpath,"rb");
-		fseek(file,0,SEEK_END);
-		size = ftell(file);
-		fclose(file);
-		return size;
+		struct stat status;
+		stat(fpath, &status);
+		return status.st_size;
+	#else
+		return 0;
+	#endif
+}
+
+int uxfile_ftype(const char *fpath) {
+	#if defined(PSP)
+		SceIoStat stat;
+		sceIoGetstat(fpath,&stat);
+		return FIO_S_ISDIR(stat.st_mode);
+	#elif defined(_WIN32) || defined(WII)
+		struct stat status;
+		stat(fpath, &status);
+		return (status.st_mode & S_IFDIR);
 	#else
 		return 0;
 	#endif
@@ -203,23 +212,37 @@ char *uxfile_ext(char *fpath, UXFILESIZE_T * len) {
 	return NULL;
 }
 
-int uxfile_dopen(const char *path) {
+UXFILEDIRHANDLE uxfile_dopen(const char *path) {
 	#ifdef PSP
 		return sceIoDopen(path);
+	#elif defined(WII) || defined(_WIN32)
+		return opendir(path);
 	#endif
+
 	return 0;
 }
 
-int uxfile_dclose(int id) {
+int uxfile_dclose(UXFILEDIRHANDLE id) {
 	#ifdef PSP
 		return sceIoDclose(id);
+	#elif defined(WII) || defined(_WIN32)
+		return closedir(id);
 	#endif
 	return 0;
 }
 
-int uxfile_dread(const char *path, UXFILEDIRENTRY *entry) {
+int uxfile_dread(UXFILEDIRHANDLE dirp, UXFILEDIRENTRY *entry) {
 	#ifdef PSP
-		return sceIoDread(path,entry);
+		return sceIoDread(dirp, entry);
+	#elif defined(_WIN32) || defined(WII)
+		return ((entry = readdir( dirp )) != NULL);
+	#endif
+	return 0;
+}
+
+int uxfile_removefile(const char *path) {
+	#ifdef PSP
+		return sceIoRemove(path);
 	#endif
 	return 0;
 }
@@ -228,11 +251,12 @@ int uxfile_removedir(const char *path) {
 	#ifdef PSP
 		return sceIoRmdir(path);
 	#endif
+	return 0;
 }
 
 /* FILE UTILS */
 int uxfile_remove_recursive(const char *path, int recursive) {
-	int filedesc;
+	UXFILEDIRHANDLE filedesc;
 	UXFILEDIRENTRY ent;
 	char temp[1024];
 	memset(&ent, 0, sizeof(UXFILEDIRENTRY));
@@ -244,28 +268,18 @@ int uxfile_remove_recursive(const char *path, int recursive) {
 	filedesc = uxfile_dopen(path);
 	if(filedesc < 0) { return 1; }
 
-	while (uxfile_dread(filedesc,&ent)) {
-		if (ent.d_stat.st_attr & FIO_SO_IFDIR) {
-			if (ent.d_name[0] == '.' && (ent.d_name[1] == '.' || ent.d_name[1] == 0)) { continue; }
-			else {
-				if ( recursive ) {
-					uxmemset(temp,0, 1024);
-					strcpy(temp, path);
-					strcat(temp,UXFILESYS_DIRSEPS);
-					strcat(temp,ent.d_name);
-					err = uxfile_remove_recursive(temp, recursive);
-				}
-			}
+	while (uxfile_dread(filedesc, &ent)) {
+		if (ent.d_name[0] == '.' && (ent.d_name[1] == '.' || ent.d_name[1] == 0)) { continue; }
+		uxmemset(temp,0, 1024);
+		uxstring_copy(temp, path);
+		uxstring_cat(temp,UXFILESYS_DIRSEPS);
+		uxstring_cat(temp,ent.d_name);
+		if (uxfile_ftype(temp)==1) {
+			if ( recursive ) { err = uxfile_remove_recursive(temp, recursive); }
 		}
-		else {
-			uxmemset(temp,0, 1024);
-			strcpy(temp, path);
-			strcat(temp,UXFILESYS_DIRSEPS);
-			strcat(temp,ent.d_name);
-			sceIoRemove(temp);
-		}
+		else { uxfile_removefile(temp); }
 	}
-	uxfile_dclose(filedesc); 
+	uxfile_dclose(filedesc);
 	uxfile_removedir(path);
 	return err;
 }
