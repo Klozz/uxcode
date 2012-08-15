@@ -16,6 +16,7 @@ int uxdisc_waitfordisc() {
 	#if defined(PSP)
 		if (uxdisc_check() == false) { sceUmdWaitDriveStat(PSP_UMD_PRESENT); }
 	#endif
+	return 0;
 }
 
 int uxdisc_check() {
@@ -27,10 +28,10 @@ int uxdisc_check() {
 }
 
 int uxdisc_mount() {
-	int status;
 	if (uxdisc_mounted==true) { return false; }
 
 	#if defined(PSP)
+		int status;
 		if (uxdisc_check() == true) {
 			sceUmdActivate(1, "disc0:");
 			status = sceUmdWaitDriveStatWithTimer(UMD_WAITFORINIT, 5000000); // 5 secs timeout.
@@ -44,10 +45,10 @@ int uxdisc_mount() {
 }
 
 int uxdisc_unmount() {
-	int status;
 	if (uxdisc_mounted==false) { return false; }
 
 	#if defined(PSP)
+		int status;
 		status = sceUmdDeactivate(1,"disc0:");
 		uxdisc_mounted = (status >= 0);
 		return (uxdisc_mounted==false);

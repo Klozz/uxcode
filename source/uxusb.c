@@ -20,6 +20,8 @@ SceUID modules[8];
 int uxusb_status() {
 	#ifdef PSP
 		return sceUsbGetState();
+	#else
+		return 0;
 	#endif
 }
 

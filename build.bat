@@ -37,6 +37,8 @@ IF %BUILD_WII%==0 GOTO NOWII
 	make clean
 	rm *.dol
 	rm *.elf
+	rm build/*.*
+	rmdir build
 :NOWII
 
 IF %BUILD_PSP%==0 GOTO NOPSP

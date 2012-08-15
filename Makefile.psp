@@ -34,7 +34,7 @@ OBJS 				= $(COMMON_O)
 
 LIBRERIAS 			= -lpspsystemctrl_kernel -lpspgum -lpspge -lpspgum_vfpu -lpspgu -lpsppower \
 					  -lpspumd -lpsphprm -lpspaudio -lpspaudiocodec -lpspmath -lpspusbdevice -lpspusb \
-					  -lpspusbstor -lpspusbcam -lpsputility -lpspwlan -lpspkubridge -lpng -ljpeg -lz \ 
+					  -lpspusbstor -lpspusbcam -lpsputility -lpspwlan -lpspkubridge -lpng -ljpeg -lz \
 					  -lpsprtc -lpspssl -lpsphttp -lm -lpspsdk -lpspjpeg -lzzip -lpspopenpsid
 LIBS				= $(LIBRERIAS)
 PSPSDK				= $(shell psp-config --pspsdk-path)
