@@ -25,6 +25,8 @@
 	#define u32UXG(x) ((x & 0x00FF0000) >> 16)
 	#define u32UXB(x) ((x & 0x0000FF00) >> 8)
 	#define u32UXA(x) (x & 0x000000FF)
+
+	#define UXCOLOR2U32COLOR(x) ((UX_COLORU32)(x))
 	
 	/* Constantes UX_MOLONAS */
 	typedef enum {

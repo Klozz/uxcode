@@ -24,7 +24,10 @@
 	#define u32UXG(c)  (((c) >>16) &0xFF)  /**< Extract green component of colour. */
 	#define u32UXB(c)  (((c) >> 8) &0xFF)  /**< Extract blue component of colour. */
 	#define u32UXA(c)  ( (c)       &0xFF)  /**< Extract alpha component of colour. */
-	#define u32UXRGBA(r,g,b,a) ( (u32)( ( ((u32)(r))<<24) | ((((u32)(g)) &0xFF) <<16) | ((((u32)(b)) &0xFF) << 8) | ( ((u32)(a)) &0xFF      ) ) )
+	
+	#define u32UXRGBA(r,g,b,a) ( (u32)( ( ((u32)(r))<<24) | ((((u32)(g)) &0xFF) <<16) | ((((u32)(b)) &0xFF) << 8) | ( ((u32)(a)) &0xFF) ) )
+
+	#define UXCOLOR2U32COLOR(x) u32UXRGBA(x.r,x.g,x.b,x.a)
 	
 	/* Constantes UX_MOLONAS */
 	typedef enum {

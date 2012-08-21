@@ -66,11 +66,11 @@ typedef enum {
 
 
 /* Vertices precisos 3D. Luadev R0 */
-typedef struct { float u, v; UXCOLOR color; float nx, ny, nz; float x, y, z; } V_CTNP3;
+typedef struct { float u, v; UX_COLORU32 color; float nx, ny, nz; float x, y, z; } V_CTNP3;
 typedef struct { float u, v; float nx, ny, nz; float x, y, z; } V_TNP3;
-typedef struct { UXCOLOR color; float nx, ny, nz; float x, y, z; } V_CNP3;
-typedef struct { float u, v; UXCOLOR color; float x, y, z; } V_CTP3;
-typedef struct { UXCOLOR color; float x, y, z; } V_CP3;
+typedef struct { UX_COLORU32 color; float nx, ny, nz; float x, y, z; } V_CNP3;
+typedef struct { float u, v; UX_COLORU32 color; float x, y, z; } V_CTP3;
+typedef struct { UX_COLORU32 color; float x, y, z; } V_CP3;
 typedef struct { float u, v; float x, y, z; } V_TP3;
 typedef struct { float nx, ny, nz; float x, y, z; } V_NP3;
 typedef struct { float x, y, z; } V_P3;
@@ -78,15 +78,15 @@ typedef struct { float x, y, z; } V_P3;
 /* Vertices menos precisos, pero más rápidos 3D. Luadev R1 */
 typedef struct { short u, v; unsigned long color; short nx, ny, nz; short x, y, z; } VF_CTNP3;
 typedef struct { short u, v; short nx, ny, nz; short x, y, z; } VF_TNP3;
-typedef struct { UXCOLOR color; short nx, ny, nz; short x, y, z; } VF_CNP3;
-typedef struct { short u, v; UXCOLOR color;  short x, y, z; } VF_CTP3;
-typedef struct { UXCOLOR color; short x, y, z; } VF_CP3;
+typedef struct { UX_COLORU32 color; short nx, ny, nz; short x, y, z; } VF_CNP3;
+typedef struct { short u, v; UX_COLORU32 color;  short x, y, z; } VF_CTP3;
+typedef struct { UX_COLORU32 color; short x, y, z; } VF_CP3;
 typedef struct { short u, v; short x, y, z; } VF_TP3;
 typedef struct { short nx, ny, nz; short x, y, z; } VF_NP3;
 typedef struct { short x, y, z; } VF_P3;
 
 typedef struct UX_MATERIAL {
-	UXCOLOR color;				// color
+	UX_COLORU32 color;				// color
 	unsigned int hasTex;			// has texture
 	UX_IMAGE* tex;					// textura
 } UX_MATERIAL;
