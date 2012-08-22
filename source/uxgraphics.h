@@ -124,10 +124,6 @@ typedef struct UX_RENDER {
 typedef struct UX_VIEWPORT {
 	unsigned int sync;					//!< Video syncing (wait for scanlines).
 	UX_INTBOX window;					//!< Screen box.
-	//unsigned int width;					//!< Screen width 
-	//unsigned int height;				//!< Screen height
-	//unsigned int x;						//!< UNDOC x
-	//unsigned int y;						//!< UNDOC y
 	unsigned int _near;					//!< UNDOC near
 	unsigned int _far;					//!< UNDOC far
 	struct { float fovy; float aspect; float _near; float _far; } perspective3D;
@@ -166,7 +162,7 @@ extern void uxgraphics_shutdown();	//!< Deinitialize graphics subsytem
 
 extern int uxgraphics_nearestPixelFormat(enum UX_PIXELFORMAT pf);
 
-extern void uxgraphics_setViewMode(UX_VIEWPORT view /*!< [in] vie */, int force2D, int force3D);
+extern void uxgraphics_setViewMode(UX_VIEWPORT view /*!< [in] vie */, int perspective);
 extern void uxgraphics_setViewport(UX_VIEWPORT view, int mode);
 extern void uxgraphics_viewmatrix(UX_VIEWPORT view, int mode);
 extern void uxgraphics_modelmatrix();

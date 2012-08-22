@@ -160,6 +160,7 @@ typedef unsigned short WORD;
 #include "uxcode.h"
 #include "uxcontrols.h"
 #include "uxdisc.h"
+#include "uxdraw.h"
 #include "uxfilesys.h"
 #include "uxgraphics.h"
 #include "uximages.h"

@@ -8,6 +8,7 @@ UXCORE_O	=	source/uxcode.o \
 				source/uxvertex.o \
 				source/uxgraphics.o \
 				source/uxdraw.o \
+				source/uxaudio.o \
 				source/uxdisc.o \
 				source/uxmath.o \
 				source/uxstrings.o \

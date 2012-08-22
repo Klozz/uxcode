@@ -94,6 +94,7 @@ typedef struct UX_MATERIAL {
 typedef struct UX_MESH {
 	UX_VECTOR3D traslation;
 	UX_VECTOR3D rotation;
+	UX_VECTOR3D scale;
 	UX_MATERIAL material;
 	unsigned int in2D;				// force2D or force3D
 	unsigned int dpoly;				// tipo de dibujado.

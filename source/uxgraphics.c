@@ -73,7 +73,6 @@ UX_VIEWPORT     dView;                  /* Viewport por defecto */
   */
 int uxgraphics_init(UX_GRAPHICSMODE * window) {
 	if (uxgraphics_inited) { return 0; }
-	uxgraphics_in3D = 1;
 	
 	uxmemset(&dView,0,sizeof(UX_VIEWPORT));					// Reset viewport
 	uxmemset(&dRender,0,sizeof(UX_RENDER));					// Reset render
@@ -211,7 +210,7 @@ int uxgraphics_init(UX_GRAPHICSMODE * window) {
 #endif
 
 	uxgraphics_setViewport(dView,false);
-	uxgraphics_setViewMode(dView,false,false);
+	uxgraphics_setViewMode(dView,false);
 	uxgraphics_setRenderMode(dRender);
 
 	/* Finalizando... */
@@ -319,26 +318,26 @@ void uxgraphics_setViewport(UX_VIEWPORT view, int mode) {
 /*
  * Setea la proyeccion.
  */
-static void uxgraphics_projection(UX_VIEWPORT view, int mode) {
+static void uxgraphics_projection(UX_VIEWPORT view, int perspective) {
 #if defined(_WIN32)
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	if (mode) { gluPerspective(view.perspective3D.fovy,view.perspective3D.aspect,view.perspective3D._near,view.perspective3D._far); }
+	if (perspective) { gluPerspective(view.perspective3D.fovy,view.perspective3D.aspect,view.perspective3D._near,view.perspective3D._far); }
 	else { gluOrtho2D(view.ortho2D.left,view.ortho2D.right+6,view.ortho2D.bottom,view.ortho2D.top-30); }
 #endif
 #if defined(WII)
-	if (mode) { guPerspective(view.proypers, view.perspective3D.fovy, view.perspective3D.aspect, view.perspective3D._near, view.perspective3D._far); GX_LoadProjectionMtx(view.proypers, GX_PERSPECTIVE); }
+	if (perspective) { guPerspective(view.proypers, view.perspective3D.fovy, view.perspective3D.aspect, view.perspective3D._near, view.perspective3D._far); GX_LoadProjectionMtx(view.proypers, GX_PERSPECTIVE); }
 	else { guOrtho(view.proyort2, view.ortho2D.top, view.ortho2D.bottom, view.ortho2D.left, view.ortho2D.right, view.ortho2D._near, view.ortho2D._far); GX_LoadProjectionMtx(view.proyort2, GX_ORTHOGRAPHIC); }
 #endif
 #if defined(PSP)
 	sceGumMatrixMode(GU_PROJECTION);
 	sceGumLoadIdentity();
-	if (mode) { sceGumPerspective( view.perspective3D.fovy, view.perspective3D.aspect, view.perspective3D._near, view.perspective3D._far); }
+	if (perspective) { sceGumPerspective( view.perspective3D.fovy, view.perspective3D.aspect, view.perspective3D._near, view.perspective3D._far); }
 	else { sceGumOrtho(view.ortho2D.left,view.ortho2D.right,view.ortho2D.bottom,view.ortho2D.top,view.ortho2D._near,view.ortho2D._far); }
 #endif
 }
 
-void uxgraphics_viewmatrix(UX_VIEWPORT view, int mode) {
+void uxgraphics_viewmatrix(UX_VIEWPORT view, int perspective) {
 #if defined(_WIN32)
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -346,7 +345,7 @@ void uxgraphics_viewmatrix(UX_VIEWPORT view, int mode) {
 #endif
 #if defined(WII)
 	guMtxIdentity(view.view);
-	if (mode) { guLookAt(view.view, (guVector *)&(view.cam3.pos), (guVector *)&(view.cam3.up),(guVector *)&(view.cam3.look)); }
+	if (perspective) { guLookAt(view.view, (guVector *)&(view.cam3.pos), (guVector *)&(view.cam3.up),(guVector *)&(view.cam3.look)); }
 	else { 
 		guVector pos = (guVector){0.0f,0.0f,0.0f};
 		guVector up = (guVector){0.0f,1.0f,0.0f};
@@ -357,7 +356,13 @@ void uxgraphics_viewmatrix(UX_VIEWPORT view, int mode) {
 #if defined(PSP)
 	sceGumMatrixMode(GU_VIEW);
 	sceGumLoadIdentity();
-	if (mode) { sceGumLookAt((ScePspFVector3 *)&(view.cam3.pos),(ScePspFVector3 *)&(view.cam3.look),(ScePspFVector3 *)&(view.cam3.up)); }
+	if (perspective) { sceGumLookAt((ScePspFVector3 *)&(view.cam3.pos),(ScePspFVector3 *)&(view.cam3.look),(ScePspFVector3 *)&(view.cam3.up)); }
+	else {
+		UX_VECTOR3D pos = (UX_VECTOR3D){0.0f,0.0f,0.0f};
+		UX_VECTOR3D up = (UX_VECTOR3D){0.0f,1.0f,0.0f};
+		UX_VECTOR3D look = (UX_VECTOR3D){0.0f,0.0f,1.0f};
+		sceGumLookAt((ScePspFVector3 *)&pos,(ScePspFVector3 *)&look,(ScePspFVector3 *)&up);
+	}
 #endif
 }
 
@@ -494,10 +499,9 @@ void uxgraphics_scissor(int enabled, UX_INTBOX box) {
 /*
  *  Configura la vista y las matrices.
  */
-void uxgraphics_setViewMode(UX_VIEWPORT view, int f2D, int f3D) {
-	int mode = ((uxgraphics_in3D && !f2D) || f3D);
-	uxgraphics_projection(view,mode);
-	uxgraphics_viewmatrix(view,mode);
+void uxgraphics_setViewMode(UX_VIEWPORT view, int perspective) {
+	uxgraphics_projection(view,perspective);
+	uxgraphics_viewmatrix(view,perspective);
 }
 
 /*

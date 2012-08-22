@@ -100,10 +100,10 @@ inline void uxgraphics_vertex_drawMesh_coltex(V_CTP3* v, u32 n) {
 
 
 void uxgraphics_drawMesh(UX_MESH *mesh) {
-	uxgraphics_setViewMode(dView,(mesh->in2D),!(mesh->in2D));
+	uxgraphics_setViewMode(dView,!(mesh->in2D));
 	uxgraphics_modelmatrix();
 	
-	if (mesh->material.hasTex) { 
+	if (mesh->material.hasTex) {
 		uximages_transferimage(mesh->material.tex);
 		
 		#if defined(WII)
@@ -123,8 +123,6 @@ void uxgraphics_drawMesh(UX_MESH *mesh) {
 		sceGuTexFunc(GU_TFX_REPLACE,GU_TCC_RGBA);
 		//sceGuTexMapMode(GU_TEXTURE_COORDS,0,1);
 		#endif
-		
-		
 	}
 	#if defined(WII)
 		UX_MATRIX modelView;
@@ -151,18 +149,20 @@ void uxgraphics_drawMesh(UX_MESH *mesh) {
 		}
 		GX_End();
 	#elif defined(PSP)
+		unsigned int transform3d = GU_TRANSFORM_2D;
+		if (!mesh->in2D) { transform3d = GU_TRANSFORM_3D; }
 		sceGumPushMatrix();
 		sceGumTranslate((ScePspFVector3*)(&(mesh->traslation)));
 		sceGumRotateXYZ((ScePspFVector3*)(&(mesh->rotation)));
 		sceGumUpdateMatrix();
 		switch (mesh->vtype) {
-			case 0x0A: sceGuDrawArray(mesh->dpoly, GU_TEXTURE_16BIT|GU_VERTEX_16BIT|GU_TRANSFORM_3D, mesh->count, 0, mesh->data); break;	//fast texture
-			case 0x09: sceGuDrawArray(mesh->dpoly, GU_COLOR_8888|GU_VERTEX_16BIT|GU_TRANSFORM_3D, mesh->count, 0, mesh->data); break;		//fast color
-			case 0x0F: sceGuDrawArray(mesh->dpoly, GU_TEXTURE_16BIT|GU_COLOR_8888|GU_VERTEX_16BIT|GU_NORMAL_16BIT|GU_TRANSFORM_3D, mesh->count, 0, mesh->data); break;	//fast full
-			case 0x02: sceGuDrawArray(mesh->dpoly, GU_TEXTURE_32BITF|GU_VERTEX_32BITF|GU_TRANSFORM_3D, mesh->count, 0, mesh->data); break;	//precise texture
-			case 0x01: sceGuDrawArray(mesh->dpoly, GU_COLOR_8888|GU_VERTEX_32BITF|GU_TRANSFORM_3D, mesh->count, 0, mesh->data); break;		//precise color
-			case 0x07: sceGuDrawArray(mesh->dpoly, GU_TEXTURE_32BITF|GU_COLOR_8888|GU_VERTEX_32BITF|GU_NORMAL_32BITF|GU_TRANSFORM_3D, mesh->count, 0, mesh->data); break; //precise full
-			case 0x03: sceGuDrawArray(mesh->dpoly, GU_TEXTURE_32BITF|GU_COLOR_8888|GU_VERTEX_32BITF|GU_TRANSFORM_3D, mesh->count, 0, mesh->data); break; //color texture
+			case 0x0A: sceGumDrawArray(mesh->dpoly, GU_TEXTURE_16BIT|GU_VERTEX_16BIT|transform3d, mesh->count, 0, mesh->data); break;	//fast texture
+			case 0x09: sceGumDrawArray(mesh->dpoly, GU_COLOR_8888|GU_VERTEX_16BIT|transform3d, mesh->count, 0, mesh->data); break;		//fast color
+			case 0x0F: sceGumDrawArray(mesh->dpoly, GU_TEXTURE_16BIT|GU_COLOR_8888|GU_VERTEX_16BIT|GU_NORMAL_16BIT|transform3d, mesh->count, 0, mesh->data); break;	//fast full
+			case 0x02: sceGumDrawArray(mesh->dpoly, GU_TEXTURE_32BITF|GU_VERTEX_32BITF|transform3d, mesh->count, 0, mesh->data); break;	//precise texture
+			case 0x01: sceGumDrawArray(mesh->dpoly, GU_COLOR_8888|GU_VERTEX_32BITF|transform3d, mesh->count, 0, mesh->data); break;		//precise color
+			case 0x07: sceGumDrawArray(mesh->dpoly, GU_TEXTURE_32BITF|GU_COLOR_8888|GU_VERTEX_32BITF|GU_NORMAL_32BITF|transform3d, mesh->count, 0, mesh->data); break; //precise full
+			case 0x03: sceGumDrawArray(mesh->dpoly, GU_TEXTURE_32BITF|GU_COLOR_8888|GU_VERTEX_32BITF|transform3d, mesh->count, 0, mesh->data); break; //color texture
 			default: break;
 		}
 		sceGumPopMatrix();
@@ -190,7 +190,8 @@ UX_MESH* uxgraphics_genTexMesh(UX_IMAGE* img) {
 	uxmemset(damesh,0,sizeof(UX_MESH));
 	damesh->traslation 			= (UX_VECTOR3D){ 0.0f, 0.0f, 0.0f };
 	damesh->rotation 			= (UX_VECTOR3D){ 0.0f, 0.0f, 0.0f };
-	
+	damesh->scale 				= (UX_VECTOR3D){ 1.0f, 1.0f, 1.0f };
+
 	damesh->material.hasTex 	= true;
 	damesh->material.tex 		= img;
 	damesh->in2D 				= true;
