@@ -9,32 +9,61 @@
  */
 #include "utils.h"
 
+#include "uxaudio/mp3.c"
+
 void uxaudio_init() {
 	#ifdef _WIN32
 		FSOUND_Init (44100, 16, 0);
 		FSOUND_DSP_SetActive(FSOUND_DSP_GetFFTUnit(), 1);
+	#elif defined(PSP)
+		int status = sceUtilityLoadModule(PSP_MODULE_AV_AVCODEC);
+		status = sceUtilityLoadModule(PSP_MODULE_AV_MP3);
 	#endif
 }
 
 void uxaudio_shutdown() {
-	// finalize sound system.
+	#ifdef _WIN32
+		FSOUND_Close();
+	#elif defined(PSP)
+		int status = sceUtilityUnloadModule(PSP_MODULE_AV_MP3);
+		sceUtilityUnloadModule(PSP_MODULE_AV_AVCODEC);
+	#endif
 }
 
 
 
-UX_AUDIO * uxaudio_load(char* filename) {
-	// try opening filename
+UX_AUDIO * uxaudio_load(const char* file) {
+	UX_AUDIO * aud = NULL;
+	u32 extlen = 0;
+	UXFILE * f = NULL;
+
+	/* File exists */
+	if ( (f = uxfopen(file,"rb",UX_F_NORMAL)) == NULL ) { return NULL; }
 	
-	// try determine filetype or encoding
+	/* Init UX_AUDIO struct */
+	aud = (UX_AUDIO *)uxmemalloc(sizeof(UX_AUDIO));
+	uxmemset(aud,0,sizeof(UX_AUDIO));
+	aud->file = f;
+	aud->channel = -1;
+	aud->ibuffer = (char *)uxmemalloc(16 << 10);
+	aud->ibufferSize = 16 << 10;
+	aud->obuffer = (short *)uxmemalloc(9 << 10);
+	aud->obufferSize = 9 << 10;
 	
-	// malloc UX_AUDIO structure
-	
-	// fill UX_AUDIO structure
-	
-	// open file
-	
-	// return pointer
-	
+	/* By filetype: */
+	if ( !strncmp(uxstring_lower(uxfile_ext((char *)file,&extlen)),"mp3",3) ) {
+		aud->info = (UX_AUDIO_MP3H *)uxmemalloc(sizeof(UX_AUDIO_MP3H));
+		aud->load = &uxaudio_loadMP3;
+		aud->fillBuffer = &uxaudio_fillBufferMP3;
+		aud->togglePlay = &uxaudio_togglePlayMP3;
+		aud->unload = &uxaudio_unloadMP3;
+	}
+
+	/* Try if all worked */
+	if (aud->load != NULL && aud->load(aud) == 0) { return aud; }
+
+	uxmemfree(aud); 
+	uxfclose(f);
 	return NULL;
 }
 

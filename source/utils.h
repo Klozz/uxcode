@@ -93,6 +93,7 @@ typedef unsigned short WORD;
 	
 	#include <pspaudio.h>
 	#include <pspaudiolib.h>
+	#include <pspmp3.h>
 	
 	#include <pspusb.h>
 	#include <pspusbcam.h>

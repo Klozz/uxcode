@@ -95,8 +95,12 @@ int uxfseek(UXFILE *ptr, UXFILESIZE_T s,int t) {
 }
 
 int uxfclose(UXFILE *ptr) {
-	if (ptr->handle != NULL) { return fclose(ptr->handle); }
-	return 0;
+	int result = 0;
+	if (ptr->handle != NULL) { result = fclose(ptr->handle); }
+	if (ptr->buffer != NULL) { uxmemfree(ptr->buffer); }
+	if (ptr->path != NULL) { uxmemfree(ptr->path); }
+	uxmemfree(ptr);
+	return result;
 }
 
 void uxfflush(UXFILE *ptr) {

@@ -11,11 +11,15 @@
 #ifndef UXAUDIO_H
 #define UXAUDIO_H
 
+#include "uxfilesys.h"
+
 //#include "uxaudio/psp.h"
 //#include "uxaudio/nds.h"
 #include "uxaudio/win.h"
 //#include "uxaudio/ps3.h"
 //#include "uxaudio/wii.h"
+
+#include "uxaudio/mp3.h"
 
 
 #ifndef UXAUDIOFILE
@@ -23,14 +27,24 @@
 #endif
 
 typedef struct UX_AUDIO {
-	UXAUDIOFILE * audio;								//!< Pointer to audio stream / object.
-	void * file;										//!< Pointer to file.
-	int fileType;										//!< File type.
+	UXAUDIOFILE * info;									//!< Extra filetype header struct.
+	UXFILE * file;										//!< File struct
+	
+	char * ibuffer;										//!< Input buffer (encoded)
+	unsigned int ibufferSize;							//!< Input buffer size.
+	short * obuffer;									//!< Output buffer (raw pcm audio)
+	unsigned int obufferSize;							//!< Output buffer size.
+
 	int playStatus;										//!< Play state.
 	int buffStatus;										//!< Buffer state.
 	int loop;											//!< Loop mode.
 	int channel;										//!< Playing in channel X.
+	
 	// extra info.
+	int (*load)(struct UX_AUDIO *song);						//!< Load song
+	int (*fillBuffer)(struct UX_AUDIO *song);					//!< Fill buffer when needed
+	int (*togglePlay)(struct UX_AUDIO *song, int state);		//!< Play / Pause / Stop
+	int (*unload)(struct UX_AUDIO *song);						//!< Unload song
 } UX_AUDIO;
 
 
@@ -39,7 +53,7 @@ typedef struct UX_AUDIO {
 extern void uxaudio_init();								//!< Init audio system (if required)
 extern void uxaudio_shutdown();							//!< Deinit audio system (if required)
 
-extern UX_AUDIO * uxaudio_load(char* filename);			//!< Load audio file, return UXAUDIOFILE *
+extern UX_AUDIO * uxaudio_load(const char* filename);			//!< Load audio file, return UXAUDIOFILE *
 extern void uxaudio_play(UX_AUDIO* song);				//!< Start playing song.
 extern void uxaudio_stop(UX_AUDIO* song);				//!< Stop playing song.
 extern void uxaudio_pause(UX_AUDIO* song, int toggle);	//!< Pause/resume/toggle song.
