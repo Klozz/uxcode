@@ -12,4 +12,7 @@ typedef struct UX_AUDIO_MP3H {
 	#if defined(PSP)
 		SceInt32 mp3handle;
 	#endif
+	unsigned int bitrate;
+	unsigned int samplerate;
+	unsigned int channels;
 } UX_AUDIO_MP3H;
