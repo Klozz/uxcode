@@ -137,8 +137,10 @@ uxthread_t *uxthread_create(UXTHREAD_FUNCTION function, void * arguments, unsign
 	return NULL;
 }
 
-/** @} */
-
+/** 
+	\brief Stop and delete a thread.
+	\param thread Thread to stop and delete
+*/
 unsigned int uxthread_delete(uxthread_t *thread) {
 	if (thread == NULL) { return false; }
 
@@ -151,7 +153,10 @@ unsigned int uxthread_delete(uxthread_t *thread) {
 		sceKernelDeleteThread( thread->id );
 	#endif
 
+	threads[thread->number] = NULL;
 	uxmemfree(thread);
 	
 	return true;
 }
+
+/** @} */
