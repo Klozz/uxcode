@@ -11,6 +11,7 @@
 #ifndef UXTHREAD_H
 #define UXTHREAD_H
 
+#define UXTHREAD_MAXTHREADS 100
 
 /* Entry function helpers */
 #ifdef WII
@@ -27,17 +28,17 @@
 	#define UXTHREAD_ENTRY_RESULT int
 	#define UXTHREAD_ENTRY_EXITVL 0
 	#define UXTHREAD_ENTRY_PARAMS unsigned int args, void *arg
-	#define UXTHREAD_HAVEMULTITASK false
+	#undef UXTHREAD_HAVEMULTITASK
 #endif
 
 
 enum UXTHREAD_STATUS { 
-	UXTHREAD_INITING,
 	UXTHREAD_READY,
 	UXTHREAD_CLOSED,
 	UXTHREAD_SUSPENDED,
 	UXTHREAD_ALREADY_SUSPENDED,
-	UXTHREAD_RUNNING
+	UXTHREAD_RUNNING,
+	UXTHREAD_CANT_START
 };
 
 #if defined(WII)
@@ -58,10 +59,9 @@ typedef struct uxthread_t {
 	UXTHREAD_FUNCTION function;				//!< Entry / thread function.
 	void * argp;							//!< Input argument pointer.
 	unsigned int args;						//!< Input argument size.
-	void * argx;							//!< Output argument pointer.
-	unsigned int argz;						//!< Output argument size.
 	unsigned char priority;					//!< Priority : 0-127
 	UXTHREAD_T id;							//!< Internal ID.
+	unsigned int number;					//!< Internal scheduler number.
 } uxthread_t;
 
 /* Functions exported by threads module */
@@ -69,5 +69,6 @@ extern void uxthreads_init();								//!< Init threads system (if required)
 extern void uxthreads_shutdown();							//!< Deinit threads system (if required)
 
 extern uxthread_t *uxthread_create(UXTHREAD_FUNCTION function, void * arguments, unsigned int arguments_size, void * stack_addr, unsigned int stack_size, unsigned char priority);
+extern unsigned int uxthread_delete(uxthread_t *thread);
 
 #endif
