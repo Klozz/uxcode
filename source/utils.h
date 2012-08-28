@@ -171,6 +171,7 @@ typedef unsigned short WORD;
 #include "uxnet.h"
 #include "uxrtc.h"
 #include "uxstrings.h"
+#include "uxthread.h"
 #include "uxusb.h"
 #include "uxvertex.h"
 

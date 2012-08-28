@@ -12,6 +12,7 @@ UXCORE_O	=	source/uxcode.o \
 				source/uxdisc.o \
 				source/uxmath.o \
 				source/uxstrings.o \
+				source/uxthread.o \
 				source/uxrtc.o \
 				source/uxusb.o \
 				source/utils.o
