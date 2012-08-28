@@ -10,20 +10,19 @@
 
 #include "utils.h"
 
-/** @defgroup ux_files Filesys
-
-	File routines.
-	@{
-		\todo
-			- Encapsulate file object.
-			- Virtual files.
-			- Test wii filesys.
-			- file documentation
-	@} */
-
 unsigned int uxfiles_inited     = 0;
 char uxfilesCurDir[UXFILEPATHMAXLENGTH];
 
+
+/** @defgroup ux_files File subsystem
+
+	@{
+		\brief File subsystem.
+*/
+
+/**
+* \brief File system initialization
+*/
 int uxfilesys_init() {
 	if (uxfiles_inited == true) return true;
 	
@@ -49,12 +48,21 @@ int uxfilesys_init() {
 	return uxfiles_inited;
 }
 
+/**
+* \brief File system shutdown
+*/
 void uxfilesys_shutdown() {
 	if (uxfiles_inited == false) { return; }
 	
 	return;
 }
 
+/**
+* \brief Open a file
+* \param fpath File path
+* \param modes Open mode ("rb", "w+", etc...)
+* \param mode Either UX_F_NORMAL (normal mode), UX_F_VIRTUAL (virtual access)
+*/
 extern UXFILE * uxfopen(const char *fpath, const char *modes, enum UXFILEOPENMODE mode) {
 	UXFILE * file  = NULL;
 
@@ -79,21 +87,47 @@ extern UXFILE * uxfopen(const char *fpath, const char *modes, enum UXFILEOPENMOD
 	return file;
 }
 
+/**
+* \brief Write to a file
+* \param ptr Where to write
+* \param data What to write
+* \param size Size of data to be written
+* \return Number of bytes written (May differ from size passed to the function)
+*/
 UXFILESIZE_T uxfwrite(UXFILE *ptr,void *data, UXFILESIZE_T size) {
 	if (ptr->handle != NULL) { return fwrite(data,1,size,ptr->handle); }
 	return 0;
 }
 
+/**
+* \brief Read from a file
+* \param ptr Where to read
+* \param data Where to put data being read
+* \param size How many bytes to read
+* \return Number of bytes really read. (May differ from size passed to the function)
+*/
 UXFILESIZE_T uxfread(UXFILE *ptr, void *data, UXFILESIZE_T size) {
 	if (ptr->handle != NULL) { return fread(data,1,size,ptr->handle); }
 	return 0;
 }
 
+/**
+* \brief Seek a file
+* \param ptr File to seek
+* \param s How many bytes to move / until position.
+* \param t Position marker (One from SEEK_SET, SEEK_CUR, SEEK_START, SEEK_END)
+* \return New position
+*/
 int uxfseek(UXFILE *ptr, UXFILESIZE_T s,int t) {
 	if (ptr->handle != NULL) { return fseek(ptr->handle,s,t); }
 	return 0;
 }
 
+/**
+* \brief Close a file
+* \param ptr File to close
+* \return 0 if ok, error otherwise
+*/
 int uxfclose(UXFILE *ptr) {
 	int result = 0;
 	if (ptr->handle != NULL) { result = fclose(ptr->handle); }
@@ -103,6 +137,10 @@ int uxfclose(UXFILE *ptr) {
 	return result;
 }
 
+/**
+* \brief Flush changes to a file
+* \param ptr File to flush
+*/
 void uxfflush(UXFILE *ptr) {
 	#if defined(PSP)
 		sceIoDevctl("sio:", 0, NULL, 0, NULL, 0);
@@ -114,7 +152,82 @@ void uxfflush(UXFILE *ptr) {
 	if (ptr->handle != NULL) { fflush(ptr->handle); }
 }
 
-//  read routines
+/**
+* \brief File exists
+* \param fpath File to check.
+* \return 0 if not exists, otherwise it exists.
+*/
+int uxfile_exists(const char *fpath) {
+	#if defined(PSP)
+		SceIoStat stat;
+		return (sceIoGetstat(fpath,&stat) >= 0);
+	#elif defined(_WIN32)
+		DWORD fileAttr;
+		fileAttr = GetFileAttributes(fpath);
+		return (fileAttr != 0xFFFFFFFF);
+	#else
+		return 0;
+	#endif
+}
+
+/**
+* \brief File size
+* \param fpath File to determine size
+* \return File size in bytes.
+*/
+UXFILESIZE_T uxfile_fsize(const char *fpath) {
+	#if defined(PSP)
+		SceIoStat stat;
+		sceIoGetstat(fpath,&stat);
+		return stat.st_size;
+	#elif defined(_WIN32) || defined(WII)
+		struct stat status;
+		stat(fpath, &status);
+		return status.st_size;
+	#else
+		return 0;
+	#endif
+}
+
+/**
+* \brief File type
+* \param fpath File to determine if is file / folder.
+* \return 0 = regular file, 1 = is a folder
+*/
+int uxfile_ftype(const char *fpath) {
+	#if defined(PSP)
+		SceIoStat stat;
+		sceIoGetstat(fpath,&stat);
+		return FIO_S_ISDIR(stat.st_mode);
+	#elif defined(_WIN32) || defined(WII)
+		struct stat status;
+		stat(fpath, &status);
+		return (status.st_mode & S_IFDIR);
+	#else
+		return 0;
+	#endif
+}
+
+/**
+* \brief File extension
+* \param fpath File path
+* \return Pointer to extension part of the string passed (after the last dot) or NULL if no extension found.
+*/
+char *uxfile_ext(char *fpath, UXFILESIZE_T * len) {
+	int l = strlen(fpath);
+	int c = 0;
+	for (;l>0;l--) {
+		c++;
+		if (fpath[l] == UXFILESYS_EXTSEP) { *len = (c-2); return fpath+l+1; }
+		if (fpath[l] == UXFILESYS_DIRSEP) { *len = 0;     return NULL; }
+	}
+	*len = 0;
+	return NULL;
+}
+
+/** @} */
+
+
 int uxf_readu32(UXFILE *ptr, u32* dest, int n, int bswap) {
 	int i = 0, r = 0;
 	r += uxfread(ptr,dest,sizeof(u32)*n);
@@ -160,61 +273,6 @@ void uxf_getString(u8 * str, int len, UXFILE *ptr) {
 	uxf_readu8(ptr,str,len,0);
 }
 
-
-/* file utils */
-int uxfile_exists(const char *fpath) {
-	#if defined(PSP)
-		SceIoStat stat;
-		return (sceIoGetstat(fpath,&stat) >= 0);
-	#elif defined(_WIN32)
-		DWORD fileAttr;
-		fileAttr = GetFileAttributes(fpath);
-		return (fileAttr != 0xFFFFFFFF);
-	#else
-		return 0;
-	#endif
-}
-
-UXFILESIZE_T uxfile_fsize(const char *fpath) {
-	#if defined(PSP)
-		SceIoStat stat;
-		sceIoGetstat(fpath,&stat);
-		return stat.st_size;
-	#elif defined(_WIN32) || defined(WII)
-		struct stat status;
-		stat(fpath, &status);
-		return status.st_size;
-	#else
-		return 0;
-	#endif
-}
-
-int uxfile_ftype(const char *fpath) {
-	#if defined(PSP)
-		SceIoStat stat;
-		sceIoGetstat(fpath,&stat);
-		return FIO_S_ISDIR(stat.st_mode);
-	#elif defined(_WIN32) || defined(WII)
-		struct stat status;
-		stat(fpath, &status);
-		return (status.st_mode & S_IFDIR);
-	#else
-		return 0;
-	#endif
-}
-
-/* FILE EXTENSION */
-char *uxfile_ext(char *fpath, UXFILESIZE_T * len) {
-	int l = strlen(fpath);
-	int c = 0;
-	for (;l>0;l--) {
-		c++;
-		if (fpath[l] == UXFILESYS_EXTSEP) { *len = (c-2); return fpath+l+1; }
-		if (fpath[l] == UXFILESYS_DIRSEP) { *len = 0;     return NULL; }
-	}
-	*len = 0;
-	return NULL;
-}
 
 UXFILEDIRHANDLE uxfile_dopen(const char *path) {
 	#ifdef PSP
