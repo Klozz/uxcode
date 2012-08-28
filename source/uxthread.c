@@ -12,35 +12,102 @@
 
 unsigned int uxthread_number = 0;
 
-UXTHREAD_T *uxthread_create(UXTHREAD_FUNCT function, void * arguments, void * stack_addr, unsigned int stack_size, unsigned char priority) {
+uxthread_t * threads[100];
 
-	UXTHREAD_T * thread;
-	thread = (UXTHREAD_T *)uxmemalloc(sizeof(UXTHREAD_T));
+
+void uxthread_dostep(void) {
+	register int i=0;
+	for (i=0;i<100;i++) {
+		if (threads[i] != NULL) {
+			if (threads[i]->status == UXTHREAD_READY || threads[i]->status == UXTHREAD_RUNNING)
+				(threads[i])->function((threads[i])->args,(threads[i])->argp);
+			continue;
+		}
+		return;
+	}
+}
+
+UXTHREAD_ENTRY_RESULT uxthread_entry(UXTHREAD_ENTRY_PARAMS) {
+	uxthread_t * thread = arg;
+	int status = 0;
+
+	thread->status = UXTHREAD_READY;
+	if (UXTHREAD_HAVEMULTITASK) {
+		for (;;){
+			status = thread->function(thread->args, thread->argp);
+			if (status == 0) { thread->status = UXTHREAD_CLOSED; }
+			if (thread->status == UXTHREAD_CLOSED) { return UXTHREAD_ENTRY_EXITVL; }
+		}
+	} else {
+		threads[uxthread_number++] = thread;
+		return UXTHREAD_ENTRY_EXITVL;
+	}
+}
+
+
+
+uxthread_t *uxthread_create(UXTHREAD_FUNCTION function, void * arguments, unsigned int arguments_size, void * stack_addr, unsigned int stack_size, unsigned char priority) {
+	
+	/* thread allocating and initialization */
+	uxthread_t * thread;
+	thread = (uxthread_t *)uxmemalloc(sizeof(uxthread_t));
+	uxmemset(thread,0,sizeof(uxthread_t));
+
+	thread->status = UXTHREAD_INITING;
+	thread->function = function;
+	thread->argp = arguments;
+	thread->args = arguments_size;
+	thread->argx = (void *)uxmemalloc(sizeof(int)*100);
+	thread->argz = sizeof(int)*100;
+	thread->priority = priority;
 
 	#if defined(WII)
-
-		int status = LWP_CreateThread(thread,function,arguments,stack_addr,stack_size,priority);
+		thread->id = LWP_THREAD_NULL;
+		int status = LWP_CreateThread( &(thread->id), &uxthread_entry, thread, stack_addr, stack_size, priority);
 		if (status == 0) { return thread; }
-
-	#elif defined(PSP)
-
-		char threadname[15];
-		uxmemset(threadname,0,15);
-		sprintf(threadname, "thread%08d", uxthread_number++);
-		*thread = sceKernelCreateThread((const char *)threadname, function, priority, stack_size, PSP_THREAD_ATTR_VFPU, NULL);
-		if (not ((unsigned int)(*thread) & 0x80000000)) { return thread; }
-
 	#endif
 
+	#if defined(PSP)
+		char threadname[15];
+		uxmemset(threadname,0,15);
+		sprintf(threadname, "thread%08d", uxthread_number);
+
+		thread->id = sceKernelCreateThread((const char *)threadname, &uxthread_entry, priority, stack_size, PSP_THREAD_ATTR_VFPU, NULL);
+		if (not ((unsigned int)(thread->id) & 0x80000000)) { 
+			sceKernelStartThread(thread->id,sizeof(uxthread_t),(void *)thread);
+			return thread;
+		}
+	#endif
+
+	uxmemfree(thread->argx);
+	uxmemfree(thread);
 	return NULL;
 }
 
+unsigned int uxthread_delete(uxthread_t *thread) {
+	if (thread == NULL) { return false; }
+
+	#if defined(WII)
+		thread->status = UXTHREAD_CLOSED;
+		LWP_ResumeThread(thread->id);
+		LWP_SuspendThread(thread->id);
+	#elif defined(PSP)
+		sceKernelTerminateThread( thread->id );
+		sceKernelDeleteThread( thread->id );
+	#endif
+
+	uxmemfree(thread->argx);
+	uxmemfree(thread);
+	
+	return true;
+}
 
 
 void uxthread_init() {
-	/* init thread subsystem */
+	register int i=0;
+	for (i=0;i<100;i++) { threads[i] = NULL; }
 }
 
 void uxthread_shutdown() {
-	/* shutdown thread subsystem */
+	/** close threads[i]; */	
 }
