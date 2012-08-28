@@ -24,8 +24,8 @@ UXTHREAD_T *uxthread_create(UXTHREAD_FUNCT function, void * arguments, void * st
 
 	#elif defined(PSP)
 
-		char threadname[10];
-		uxmemset(threadname,0,10);
+		char threadname[15];
+		uxmemset(threadname,0,15);
 		sprintf(threadname, "thread%08d", uxthread_number++);
 		*thread = sceKernelCreateThread((const char *)threadname, function, priority, stack_size, PSP_THREAD_ATTR_VFPU, NULL);
 		if (not ((unsigned int)(*thread) & 0x80000000)) { return thread; }
